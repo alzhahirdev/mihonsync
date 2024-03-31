@@ -1,18 +1,9 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
 package eu.kanade.domain.sync
 
 import eu.kanade.domain.sync.models.SyncSettings
 import eu.kanade.tachiyomi.data.sync.models.SyncTriggerOptions
-<<<<<<< HEAD
 import tachiyomi.core.preference.Preference
 import tachiyomi.core.preference.PreferenceStore
-=======
-import tachiyomi.core.preference.Preference
-import tachiyomi.core.preference.PreferenceStore
->>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
 import java.util.UUID
 
 class SyncPreferences(

@@ -41,10 +41,6 @@ fun Chapter.toDomainChapter(): DomainChapter? {
         chapterNumber = chapter_number.toDouble(),
         scanlator = scanlator,
         lastModifiedAt = last_modified,
-<<<<<<< HEAD
         version = version,
-=======
-        version = version,
->>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
     )
 }

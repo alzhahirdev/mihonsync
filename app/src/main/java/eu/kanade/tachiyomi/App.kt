@@ -138,7 +138,6 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             LogcatLogger.install(AndroidLogcatLogger(LogPriority.VERBOSE))
         }
 
-<<<<<<< HEAD
         initializeMigrator()
     }
 
@@ -155,30 +154,6 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                 preference.set(BuildConfig.VERSION_CODE)
             },
         )
-=======
-        val syncPreferences: SyncPreferences by injectLazy()
-        val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
-        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppStart) {
-            SyncDataJob.startNow(this@App)
-        }
-
-        initializeMigrator()
-    }
-
-    private fun initializeMigrator() {
-        val preferenceStore = Injekt.get<PreferenceStore>()
-        val preference = preferenceStore.getInt(Preference.appStateKey("last_version_code"), 0)
-        logcat { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
-        Migrator.initialize(
-            old = preference.get(),
-            new = BuildConfig.VERSION_CODE,
-            migrations = migrations,
-            onMigrationComplete = {
-                logcat { "Updating last version to ${BuildConfig.VERSION_CODE}" }
-                preference.set(BuildConfig.VERSION_CODE)
-            },
-        )
->>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
