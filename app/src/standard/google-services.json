@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "82031285239",
-    "project_id": "mihonapp",
-    "storage_bucket": "mihonapp.appspot.com"
+    "project_number": "31551897849",
+    "project_id": "mihonsync",
+    "storage_bucket": "mihonsync.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:82031285239:android:336ed6dceef55c357594f2",
+        "mobilesdk_app_id": "1:31551897849:android:de9d23e69cf2f2b4c72228",
         "android_client_info": {
-          "package_name": "app.mihon"
+          "package_name": "app.mihon.sync"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDTvOxBQnuXADx5isKxoynPG0nlAO8bQbk"
+          "current_key": "AIzaSyC6THC48M8M3ykX2SluGyzspQ9gwteJ0K0"
         }
       ],
       "services": {
@@ -26,15 +26,15 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:82031285239:android:b7440cbdd0d33c9d7594f2",
+        "mobilesdk_app_id": "1:31551897849:android:2c9702893c61c38bc72228",
         "android_client_info": {
-          "package_name": "app.mihon.debug"
+          "package_name": "app.mihon.sync.debug"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDTvOxBQnuXADx5isKxoynPG0nlAO8bQbk"
+          "current_key": "AIzaSyC6THC48M8M3ykX2SluGyzspQ9gwteJ0K0"
         }
       ],
       "services": {
