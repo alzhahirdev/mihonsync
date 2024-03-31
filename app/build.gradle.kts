@@ -22,7 +22,11 @@ android {
     defaultConfig {
         applicationId = "app.mihon"
 
+<<<<<<< HEAD
         versionCode = 7
+=======
+        versionCode = 7
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
         versionName = "0.16.4"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
@@ -256,7 +260,13 @@ dependencies {
     // debugImplementation(libs.leakcanary.android)
     implementation(libs.leakcanary.plumber)
 
+<<<<<<< HEAD
     testImplementation(kotlinx.coroutines.test)
+=======
+    testImplementation(kotlinx.coroutines.test)
+    implementation(libs.google.api.services.drive)
+    implementation(libs.google.api.client.oauth)
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
 }
 
 androidComponents {

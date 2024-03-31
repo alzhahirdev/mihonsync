@@ -43,4 +43,8 @@ BEGIN
     UPDATE mangas
     SET version = version + 1
     WHERE _id = new.manga_id AND (SELECT is_syncing FROM mangas WHERE _id = new.manga_id) = 0;
+<<<<<<< HEAD
 END;
+=======
+END;
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39

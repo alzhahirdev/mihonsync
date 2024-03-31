@@ -42,7 +42,11 @@ data class BackupManga(
     @ProtoNumber(106) var lastModifiedAt: Long = 0,
     @ProtoNumber(107) var favoriteModifiedAt: Long? = null,
     @ProtoNumber(108) var excludedScanlators: List<String> = emptyList(),
+<<<<<<< HEAD
     @ProtoNumber(109) var version: Long = 0,
+=======
+    @ProtoNumber(109) var version: Long = 0,
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
 ) {
     fun getMangaImpl(): Manga {
         return Manga.create().copy(

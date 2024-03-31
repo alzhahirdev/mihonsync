@@ -16,7 +16,11 @@ import eu.kanade.tachiyomi.util.system.cancelNotification
 import eu.kanade.tachiyomi.util.system.isRunning
 import eu.kanade.tachiyomi.util.system.workManager
 import logcat.LogPriority
+<<<<<<< HEAD
 import tachiyomi.core.util.system.logcat
+=======
+import tachiyomi.core.util.system.logcat
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.util.concurrent.TimeUnit
@@ -34,8 +38,12 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
         }
 
         return try {
+<<<<<<< HEAD
             // TODO: Uncomment this when the rest of sync PR is merged.
             //  SyncManager(context).syncData()
+=======
+            SyncManager(context).syncData()
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
             Result.success()
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e)
