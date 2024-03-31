@@ -79,3 +79,9 @@
 # Firebase
 -keep class com.google.firebase.installations.** { *; }
 -keep interface com.google.firebase.installations.** { *; }
+
+# Google Drive
+-keep class com.google.api.services.** { *; }
+
+# Google OAuth
+-keep class com.google.api.client.** { *; }

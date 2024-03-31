@@ -25,6 +25,7 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import eu.kanade.domain.DomainModule
 import eu.kanade.domain.base.BasePreferences
+import eu.kanade.domain.sync.SyncPreferences
 import eu.kanade.domain.ui.UiPreferences
 import eu.kanade.domain.ui.model.setAppCompatDelegateThemeMode
 import eu.kanade.tachiyomi.crash.CrashActivity
@@ -34,6 +35,7 @@ import eu.kanade.tachiyomi.data.coil.MangaCoverKeyer
 import eu.kanade.tachiyomi.data.coil.MangaKeyer
 import eu.kanade.tachiyomi.data.coil.TachiyomiImageDecoder
 import eu.kanade.tachiyomi.data.notification.Notifications
+import eu.kanade.tachiyomi.data.sync.SyncDataJob
 import eu.kanade.tachiyomi.di.AppModule
 import eu.kanade.tachiyomi.di.PreferenceModule
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -136,6 +138,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             LogcatLogger.install(AndroidLogcatLogger(LogPriority.VERBOSE))
         }
 
+<<<<<<< HEAD
         initializeMigrator()
     }
 
@@ -152,6 +155,30 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                 preference.set(BuildConfig.VERSION_CODE)
             },
         )
+=======
+        val syncPreferences: SyncPreferences by injectLazy()
+        val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
+        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppStart) {
+            SyncDataJob.startNow(this@App)
+        }
+
+        initializeMigrator()
+    }
+
+    private fun initializeMigrator() {
+        val preferenceStore = Injekt.get<PreferenceStore>()
+        val preference = preferenceStore.getInt(Preference.appStateKey("last_version_code"), 0)
+        logcat { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
+        Migrator.initialize(
+            old = preference.get(),
+            new = BuildConfig.VERSION_CODE,
+            migrations = migrations,
+            onMigrationComplete = {
+                logcat { "Updating last version to ${BuildConfig.VERSION_CODE}" }
+                preference.set(BuildConfig.VERSION_CODE)
+            },
+        )
+>>>>>>> a926ff6c1eda85ff1f1b0c36cee366d795cc2b39
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
@@ -179,6 +206,13 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
     override fun onStart(owner: LifecycleOwner) {
         SecureActivityDelegate.onApplicationStart()
+
+        val syncPreferences: SyncPreferences by injectLazy()
+        val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
+        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppResume
+        ) {
+            SyncDataJob.startNow(this@App)
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
