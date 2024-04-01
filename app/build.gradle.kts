@@ -20,7 +20,7 @@ android {
     namespace = "eu.kanade.tachiyomi"
 
     defaultConfig {
-        applicationId = "app.mihon"
+        applicationId = "app.mihon.sync"
 
         versionCode = 7
         versionName = "0.16.4"
