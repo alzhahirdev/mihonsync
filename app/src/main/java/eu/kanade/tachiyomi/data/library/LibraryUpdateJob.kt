@@ -19,9 +19,11 @@ import androidx.work.workDataOf
 import eu.kanade.domain.chapter.interactor.SyncChaptersWithSource
 import eu.kanade.domain.manga.interactor.UpdateManga
 import eu.kanade.domain.manga.model.toSManga
+import eu.kanade.domain.sync.SyncPreferences
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.notification.Notifications
+import eu.kanade.tachiyomi.data.sync.SyncDataJob
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.util.shouldDownloadNewChapters
@@ -469,20 +471,49 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             category: Category? = null,
         ): Boolean {
             val wm = context.workManager
+            // Check if the LibraryUpdateJob is already running
             if (wm.isRunning(TAG)) {
                 // Already running either as a scheduled or manual job
                 return false
             }
 
-            val inputData = workDataOf(
-                KEY_CATEGORY to category?.id,
-            )
-            val request = OneTimeWorkRequestBuilder<LibraryUpdateJob>()
-                .addTag(TAG)
-                .addTag(WORK_NAME_MANUAL)
-                .setInputData(inputData)
-                .build()
-            wm.enqueueUniqueWork(WORK_NAME_MANUAL, ExistingWorkPolicy.KEEP, request)
+            val syncPreferences: SyncPreferences = Injekt.get()
+
+            // Only proceed with SyncDataJob if sync is enabled and the specific sync on library update flag is set
+            val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
+            if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnLibraryUpdate) {
+                // Check if SyncDataJob is already running
+                if (wm.isRunning(SyncDataJob.TAG_MANUAL)) {
+                    // SyncDataJob is already running
+                    return false
+                }
+
+                // Define the SyncDataJob
+                val syncDataJob = OneTimeWorkRequestBuilder<SyncDataJob>()
+                    .addTag(SyncDataJob.TAG_MANUAL)
+                    .build()
+
+                // Chain SyncDataJob to run before LibraryUpdateJob
+                val inputData = workDataOf(KEY_CATEGORY to category?.id)
+                val libraryUpdateJob = OneTimeWorkRequestBuilder<LibraryUpdateJob>()
+                    .addTag(TAG)
+                    .addTag(WORK_NAME_MANUAL)
+                    .setInputData(inputData)
+                    .build()
+
+                wm.beginUniqueWork(WORK_NAME_MANUAL, ExistingWorkPolicy.KEEP, syncDataJob)
+                    .then(libraryUpdateJob)
+                    .enqueue()
+            } else {
+                val inputData = workDataOf(KEY_CATEGORY to category?.id)
+                val request = OneTimeWorkRequestBuilder<LibraryUpdateJob>()
+                    .addTag(TAG)
+                    .addTag(WORK_NAME_MANUAL)
+                    .setInputData(inputData)
+                    .build()
+
+                wm.enqueueUniqueWork(WORK_NAME_MANUAL, ExistingWorkPolicy.KEEP, request)
+            }
 
             return true
         }

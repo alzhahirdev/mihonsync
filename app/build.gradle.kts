@@ -256,6 +256,9 @@ dependencies {
     // debugImplementation(libs.leakcanary.android)
     implementation(libs.leakcanary.plumber)
 
+    implementation(libs.google.api.services.drive)
+    implementation(libs.google.api.client.oauth)
+
     testImplementation(kotlinx.coroutines.test)
 }
 

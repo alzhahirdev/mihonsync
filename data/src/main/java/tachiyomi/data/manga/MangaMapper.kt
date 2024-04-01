@@ -29,9 +29,6 @@ object MangaMapper {
         calculateInterval: Long,
         lastModifiedAt: Long,
         favoriteModifiedAt: Long?,
-        version: Long,
-        @Suppress("UNUSED_PARAMETER")
-        isSyncing: Long,
     ): Manga = Manga(
         id = id,
         source = source,
@@ -55,7 +52,6 @@ object MangaMapper {
         initialized = initialized,
         lastModifiedAt = lastModifiedAt,
         favoriteModifiedAt = favoriteModifiedAt,
-        version = version,
     )
 
     @Suppress("LongParameterList")

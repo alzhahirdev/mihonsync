@@ -63,6 +63,7 @@ data class BackupManga(
             lastModifiedAt = this@BackupManga.lastModifiedAt,
             favoriteModifiedAt = this@BackupManga.favoriteModifiedAt,
             version = this@BackupManga.version,
+            version = this@BackupManga.version,
         )
     }
 }
