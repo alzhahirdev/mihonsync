@@ -30,7 +30,6 @@ object MangaMapper {
         lastModifiedAt: Long,
         favoriteModifiedAt: Long?,
         version: Long,
-        @Suppress("UNUSED_PARAMETER")
         isSyncing: Long,
     ): Manga = Manga(
         id = id,
