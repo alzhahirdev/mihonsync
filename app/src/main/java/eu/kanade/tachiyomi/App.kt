@@ -138,6 +138,12 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             LogcatLogger.install(AndroidLogcatLogger(LogPriority.VERBOSE))
         }
 
+        val syncPreferences: SyncPreferences by injectLazy()
+        val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
+        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppStart) {
+            SyncDataJob.startNow(this@App)
+        }
+
         initializeMigrator()
     }
 
