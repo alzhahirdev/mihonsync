@@ -37,7 +37,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Mihon"
+rootProject.name = "MihonSync"
 include(":app")
 include(":core-metadata")
 include(":core:common")
