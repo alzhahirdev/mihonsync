@@ -82,7 +82,7 @@ class ChapterRepositoryImpl(
 
     override suspend fun getChapterByMangaId(mangaId: Long, applyScanlatorFilter: Boolean): List<Chapter> {
         return handler.awaitList {
-            chaptersQueries.getChaptersByMangaId(mangaId, applyScanlatorFilter.toLong(), ::mapChapter)
+            chaptersQueries.getChaptersByMangaId(mangaId, applyScanlatorFilter.toLong(), ChapterMapper::mapChapter)
         }
     }
 
@@ -102,7 +102,7 @@ class ChapterRepositoryImpl(
         return handler.awaitList {
             chaptersQueries.getBookmarkedChaptersByMangaId(
                 mangaId,
-                ::mapChapter,
+                ChapterMapper::mapChapter,
             )
         }
     }
