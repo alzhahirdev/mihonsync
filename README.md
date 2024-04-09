@@ -5,7 +5,7 @@ MihonSync is a fork of Mihon. The original README can be found at README-OLD.
 ## About
 
 > [!WARNING]
-> MihonSync is not intended for public use. It is untested, and bugs/errors may occur. Use at your own risk.
+> MihonSync is not intended for public use. It is untested, and bugs/errors may occur. Use at your own risk!
 
 ### What's New
 
