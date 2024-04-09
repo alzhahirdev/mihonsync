@@ -144,6 +144,7 @@
     <ID>FunctionNaming:Requests.kt$fun DELETE( url: String, headers: Headers = DEFAULT_HEADERS, body: RequestBody = DEFAULT_BODY, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
     <ID>FunctionNaming:Requests.kt$fun GET( url: HttpUrl, headers: Headers = DEFAULT_HEADERS, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
     <ID>FunctionNaming:Requests.kt$fun GET( url: String, headers: Headers = DEFAULT_HEADERS, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
+    <ID>FunctionNaming:Requests.kt$fun PATCH( url: String, headers: Headers = DEFAULT_HEADERS, body: RequestBody = DEFAULT_BODY, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
     <ID>FunctionNaming:Requests.kt$fun POST( url: String, headers: Headers = DEFAULT_HEADERS, body: RequestBody = DEFAULT_BODY, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
     <ID>FunctionNaming:Requests.kt$fun PUT( url: String, headers: Headers = DEFAULT_HEADERS, body: RequestBody = DEFAULT_BODY, cache: CacheControl = DEFAULT_CACHE_CONTROL, ): Request</ID>
     <ID>FunctionParameterNaming:MangaScreen.kt$MangaScreen$manga_: Manga?</ID>
@@ -247,6 +248,7 @@
     <ID>LongMethod:SourceFilterDialog.kt$@Composable private fun FilterItem(filter: Filter&lt;*&gt;, onUpdate: () -&gt; Unit)</ID>
     <ID>LongMethod:SourceSearchScreen.kt$SourceSearchScreen$@Composable override fun Content()</ID>
     <ID>LongMethod:SyncChaptersWithSource.kt$SyncChaptersWithSource$suspend fun await( rawSourceChapters: List&lt;SChapter&gt;, manga: Manga, source: Source, manualFetch: Boolean = false, fetchWindow: Pair&lt;Long, Long&gt; = Pair(0, 0), ): List&lt;Chapter&gt;</ID>
+    <ID>LongMethod:SyncManager.kt$SyncManager$suspend fun syncData()</ID>
     <ID>LongMethod:TrackInfoDialog.kt$TrackInfoDialogHomeScreen$@Composable override fun Content()</ID>
     <ID>LongMethod:TrackInfoDialog.kt$TrackerRemoveScreen$@Composable override fun Content()</ID>
     <ID>LongMethod:TrackInfoDialogHome.kt$@Composable private fun TrackInfoItem( title: String, tracker: Tracker, status: StringResource?, onStatusClick: () -&gt; Unit, chapters: String, onChaptersClick: () -&gt; Unit, score: String?, onScoreClick: (() -&gt; Unit)?, startDate: String?, onStartDateClick: (() -&gt; Unit)?, endDate: String?, onEndDateClick: (() -&gt; Unit)?, onNewSearch: () -&gt; Unit, onOpenInBrowser: () -&gt; Unit, onRemoved: () -&gt; Unit, )</ID>
@@ -335,6 +337,7 @@
     <ID>LongParameterList:WebViewScreenContent.kt$( onNavigateUp: () -&gt; Unit, initialTitle: String?, url: String, onShare: (String) -&gt; Unit, onOpenInBrowser: (String) -&gt; Unit, onClearCookies: (String) -&gt; Unit, headers: Map&lt;String, String&gt; = emptyMap(), onUrlChange: (String) -&gt; Unit = {}, )</ID>
     <ID>LongParameterList:WebtoonRecyclerView.kt$WebtoonRecyclerView$( fromRate: Float, toRate: Float, fromX: Float, toX: Float, fromY: Float, toY: Float, )</ID>
     <ID>LoopWithTooManyJumpStatements:DownloadStore.kt$DownloadStore$for</ID>
+    <ID>LoopWithTooManyJumpStatements:GoogleDriveSyncService.kt$GoogleDriveSyncService$while</ID>
     <ID>LoopWithTooManyJumpStatements:ImageUtil.kt$ImageUtil$for</ID>
     <ID>LoopWithTooManyJumpStatements:Kavita.kt$Kavita$for</ID>
     <ID>LoopWithTooManyJumpStatements:RateLimitInterceptor.kt$RateLimitInterceptor$while</ID>
@@ -481,6 +484,10 @@
     <ID>MagicNumber:GlanceUtils.kt$64</ID>
     <ID>MagicNumber:GlanceUtils.kt$95</ID>
     <ID>MagicNumber:GlobalSearchItem.kt$99f</ID>
+    <ID>MagicNumber:GoogleDriveSyncService.kt$GoogleDriveSyncService$10</ID>
+    <ID>MagicNumber:GoogleDriveSyncService.kt$GoogleDriveSyncService$1000L</ID>
+    <ID>MagicNumber:GoogleDriveSyncService.kt$GoogleDriveSyncService$16000L</ID>
+    <ID>MagicNumber:GoogleDriveSyncService.kt$GoogleDriveSyncService$3</ID>
     <ID>MagicNumber:Hash.kt$Hash$15</ID>
     <ID>MagicNumber:Hash.kt$Hash$240</ID>
     <ID>MagicNumber:Hash.kt$Hash$4</ID>
@@ -622,11 +629,19 @@
     <ID>MagicNumber:Scrollbar.kt$100</ID>
     <ID>MagicNumber:Scrollbar.kt$50</ID>
     <ID>MagicNumber:SecureActivityDelegate.kt$SecureActivityDelegate.Companion$60_000</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$10080</ID>
     <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$12</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$1440</ID>
     <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$168</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$180</ID>
     <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$24</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$2880</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$30</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$360</ID>
     <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$48</ID>
     <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$6</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$60</ID>
+    <ID>MagicNumber:SettingsDataScreen.kt$SettingsDataScreen$720</ID>
     <ID>MagicNumber:SettingsDownloadScreen.kt$SettingsDownloadScreen$10</ID>
     <ID>MagicNumber:SettingsDownloadScreen.kt$SettingsDownloadScreen$3</ID>
     <ID>MagicNumber:SettingsDownloadScreen.kt$SettingsDownloadScreen$4</ID>
@@ -653,6 +668,12 @@
     <ID>MagicNumber:Surface.kt$4.5f</ID>
     <ID>MagicNumber:Suwayomi.kt$Suwayomi$255</ID>
     <ID>MagicNumber:Suwayomi.kt$Suwayomi$35</ID>
+    <ID>MagicNumber:SyncDataJob.kt$SyncDataJob.Companion$10</ID>
+    <ID>MagicNumber:SyncManager.kt$SyncManager$1000</ID>
+    <ID>MagicNumber:SyncManager.kt$SyncManager$60000</ID>
+    <ID>MagicNumber:SyncYomiSyncService.kt$SyncYomiSyncService$2000L</ID>
+    <ID>MagicNumber:SyncYomiSyncService.kt$SyncYomiSyncService$30L</ID>
+    <ID>MagicNumber:SyncYomiSyncService.kt$SyncYomiSyncService$32000L</ID>
     <ID>MagicNumber:Tabs.kt$0.08f</ID>
     <ID>MagicNumber:Tabs.kt$0.12f</ID>
     <ID>MagicNumber:TimeUtils.kt$4</ID>
@@ -725,7 +746,11 @@
     <ID>MaxLineLength:PreferenceScreen.kt$*</ID>
     <ID>MaxLineLength:Scaffold.kt$*</ID>
     <ID>MaxLineLength:SpecificHostRateLimitInterceptor.kt$*</ID>
+    <ID>MaxLineLength:SyncService.kt$SyncService$*</ID>
+    <ID>MaxLineLength:SyncService.kt$SyncService$val</ID>
+    <ID>MaxLineLength:SyncService.kt$*</ID>
     <ID>MaxLineLength:WebViewUtil.kt$WebViewUtil$*</ID>
+    <ID>MaximumLineLength:SyncService.kt$SyncService$ </ID>
     <ID>MemberNameEqualsClassName:ExtensionInstaller.kt$ExtensionInstaller$private val extensionInstaller = Injekt.get&lt;BasePreferences&gt;().extensionInstaller()</ID>
     <ID>ModifierClickableOrder:ScanlatorFilterDialog.kt$clickable { if (isExcluded) { mutableExcludedScanlators.remove(scanlator) } else { mutableExcludedScanlators.add(scanlator) } }</ID>
     <ID>ModifierMissing:AppBar.kt$AppBarActions</ID>
@@ -820,6 +845,7 @@
     <ID>NestedBlockDepth:DownloadQueueScreenModel.kt$DownloadQueueScreenModel.&lt;no name provided&gt;$override fun onMenuItemClick(position: Int, menuItem: MenuItem)</ID>
     <ID>NestedBlockDepth:Downloader.kt$Downloader$private fun archiveChapter( mangaDir: UniFile, dirname: String, tmpDir: UniFile, )</ID>
     <ID>NestedBlockDepth:ExtensionInstaller.kt$ExtensionInstaller$fun installApk(downloadId: Long, uri: Uri)</ID>
+    <ID>NestedBlockDepth:GoogleDriveSyncService.kt$GoogleDriveSyncService$override suspend fun beforeSync()</ID>
     <ID>NestedBlockDepth:ImageUtil.kt$ImageUtil$fun chooseBackground(context: Context, imageStream: InputStream): Drawable</ID>
     <ID>NestedBlockDepth:KavitaApi.kt$KavitaApi$fun getNewToken(apiUrl: String, apiKey: String): String?</ID>
     <ID>NestedBlockDepth:KavitaApi.kt$KavitaApi$private fun getLatestChapterRead(url: String): Double</ID>
@@ -852,6 +878,7 @@
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$fun installPrivateExtensionFile(context: Context, file: File): Boolean</ID>
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$private fun loadExtension(context: Context, extensionInfo: ExtensionInfo): LoadResult</ID>
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$private fun selectExtensionPackage(shared: ExtensionInfo?, private: ExtensionInfo?): ExtensionInfo?</ID>
+    <ID>ReturnCount:GoogleDriveSyncService.kt$GoogleDriveSyncService$override suspend fun pullSyncData(): SyncData?</ID>
     <ID>ReturnCount:HttpPageLoader.kt$HttpPageLoader$private fun preloadNextPages(currentPage: ReaderPage, amount: Int): List&lt;PriorityPage&gt;</ID>
     <ID>ReturnCount:ImageUtil.kt$ImageUtil$fun chooseBackground(context: Context, imageStream: InputStream): Drawable</ID>
     <ID>ReturnCount:ImageUtil.kt$ImageUtil$fun isAnimatedAndSupported(stream: InputStream): Boolean</ID>
@@ -860,6 +887,8 @@
     <ID>ReturnCount:KavitaApi.kt$KavitaApi$private fun getLatestChapterRead(url: String): Double</ID>
     <ID>ReturnCount:KitsuDateHelper.kt$KitsuDateHelper$fun parse(dateString: String?): Long</ID>
     <ID>ReturnCount:LibraryUpdateJob.kt$LibraryUpdateJob$override suspend fun doWork(): Result</ID>
+    <ID>ReturnCount:LibraryUpdateJob.kt$LibraryUpdateJob$private suspend fun updateManga(manga: Manga, fetchWindow: Pair&lt;Long, Long&gt;): List&lt;Chapter&gt;</ID>
+    <ID>ReturnCount:LibraryUpdateJob.kt$LibraryUpdateJob.Companion$fun startNow( context: Context, category: Category? = null, target: Target = Target.CHAPTERS): Boolean</ID>
     <ID>ReturnCount:LocalSource.kt$LocalSource$private fun copyComicInfoFileFromArchive(chapterArchives: List&lt;UniFile&gt;, folderPath: String?): File?</ID>
     <ID>ReturnCount:MainActivity.kt$MainActivity$private fun handleIntentAction(intent: Intent, navigator: Navigator): Boolean</ID>
     <ID>ReturnCount:MangaCoverFetcher.kt$MangaCoverFetcher$private suspend fun httpLoader(): FetchResult</ID>
@@ -883,6 +912,9 @@
     <ID>ReturnCount:ReaderViewModel.kt$ReaderViewModel$private fun downloadNextChapters()</ID>
     <ID>ReturnCount:ReaderViewModel.kt$ReaderViewModel$private fun updateTrackChapterRead(readerChapter: ReaderChapter)</ID>
     <ID>ReturnCount:ReaderViewModel.kt$ReaderViewModel$suspend fun preload(chapter: ReaderChapter)</ID>
+    <ID>ReturnCount:SyncManager.kt$SyncManager$private fun areChaptersDifferent(localChapters: List&lt;Chapters&gt;, remoteChapters: List&lt;BackupChapter&gt;): Boolean</ID>
+    <ID>ReturnCount:SyncManager.kt$SyncManager$private suspend fun isMangaDifferent(localManga: Manga, remoteManga: BackupManga): Boolean</ID>
+    <ID>ReturnCount:SyncManager.kt$SyncManager$suspend fun syncData()</ID>
     <ID>ReturnCount:ViewExtensions.kt$fun View?.isVisibleOnScreen(): Boolean</ID>
     <ID>ReturnCount:WebViewInterceptor.kt$WebViewInterceptor$override fun intercept(chain: Interceptor.Chain): Response</ID>
     <ID>ReturnCount:WebViewInterceptor.kt$private fun isRequestHeaderSafe(_name: String, _value: String): Boolean</ID>
@@ -1013,6 +1045,8 @@
     <ID>TooGenericExceptionCaught:GetManga.kt$GetManga$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GetTracks.kt$GetTracks$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GlobalExceptionHandler.kt$GlobalExceptionHandler.Companion$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GoogleDriveSyncService.kt$GoogleDriveService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GoogleDriveSyncService.kt$GoogleDriveSyncService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HistoryRepositoryImpl.kt$HistoryRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HttpPageLoader.kt$HttpPageLoader$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:ImageSaver.kt$ImageSaver$e: Exception</ID>
@@ -1070,6 +1104,7 @@
     <ID>TooGenericExceptionCaught:SourcePagingSource.kt$SourcePagingSource$e: Exception</ID>
     <ID>TooGenericExceptionCaught:Suwayomi.kt$Suwayomi$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SyncChapterProgressWithTrack.kt$SyncChapterProgressWithTrack$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:SyncDataJob.kt$SyncDataJob$e: Exception</ID>
     <ID>TooGenericExceptionCaught:TrackChapter.kt$TrackChapter$e: Exception</ID>
     <ID>TooGenericExceptionCaught:TrackInfoDialog.kt$TrackInfoDialogHomeScreen.Model$e: Exception</ID>
     <ID>TooGenericExceptionCaught:TrackInfoDialog.kt$TrackerSearchScreen.Model$e: Throwable</ID>
@@ -1093,6 +1128,13 @@
     <ID>TooGenericExceptionThrown:DownloadProvider.kt$DownloadProvider$throw Exception( context.stringResource( MR.strings.invalid_location, downloadsDir?.displayablePath ?: "", ), )</ID>
     <ID>TooGenericExceptionThrown:Downloader.kt$Downloader$throw Exception(context.stringResource(MR.strings.page_list_empty_error))</ID>
     <ID>TooGenericExceptionThrown:ExtensionLoader.kt$ExtensionLoader$throw Exception("Unknown source class type: ${obj.javaClass}")</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveService$throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.error_before_sync_gdrive) + ": ${e.message}", e)</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.error_before_sync_gdrive) + ": Max retries reached.")</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.error_deleting_google_drive_lock_file), e)</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.error_uploading_sync_data) + ": ${e.message}", e)</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(e.message, e)</ID>
     <ID>TooGenericExceptionThrown:HttpSource.kt$HttpSource$throw RuntimeException(e)</ID>
     <ID>TooGenericExceptionThrown:KitsuApi.kt$KitsuApi$throw Exception("Could not find manga")</ID>
     <ID>TooGenericExceptionThrown:KitsuInterceptor.kt$KitsuInterceptor$throw Exception("Not authenticated with Kitsu")</ID>
@@ -1153,11 +1195,14 @@
     <ID>TooManyFunctions:ReaderPageImageView.kt$ReaderPageImageView : FrameLayout</ID>
     <ID>TooManyFunctions:ReaderPreferences.kt$ReaderPreferences</ID>
     <ID>TooManyFunctions:ReaderViewModel.kt$ReaderViewModel : ViewModel</ID>
+    <ID>TooManyFunctions:SettingsDataScreen.kt$SettingsDataScreen : SearchableSettings</ID>
     <ID>TooManyFunctions:SettingsItems.kt$tachiyomi.presentation.core.components.SettingsItems.kt</ID>
     <ID>TooManyFunctions:SharedPreferencesDataStore.kt$SharedPreferencesDataStore : PreferenceDataStore</ID>
     <ID>TooManyFunctions:Shikimori.kt$Shikimori : BaseTrackerDeletableTracker</ID>
     <ID>TooManyFunctions:SourcePreferences.kt$SourcePreferences</ID>
     <ID>TooManyFunctions:Suwayomi.kt$Suwayomi : BaseTrackerEnhancedTracker</ID>
+    <ID>TooManyFunctions:SyncPreferences.kt$SyncPreferences</ID>
+    <ID>TooManyFunctions:SyncService.kt$SyncService</ID>
     <ID>TooManyFunctions:Tracker.kt$Tracker</ID>
     <ID>TooManyFunctions:UpdatesScreenModel.kt$UpdatesScreenModel : StateScreenModel</ID>
     <ID>TooManyFunctions:WebtoonPageHolder.kt$WebtoonPageHolder : WebtoonBaseHolder</ID>

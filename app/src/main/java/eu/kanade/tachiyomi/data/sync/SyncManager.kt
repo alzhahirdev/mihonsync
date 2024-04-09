@@ -19,6 +19,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.protobuf.ProtoBuf
 import logcat.LogPriority
 import logcat.logcat
+import tachiyomi.core.common.util.system.logcat
 import tachiyomi.data.Chapters
 import tachiyomi.data.DatabaseHandler
 import tachiyomi.data.manga.MangaMapper.mapManga
@@ -27,7 +28,6 @@ import tachiyomi.domain.manga.model.Manga
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Date
 import kotlin.system.measureTimeMillis
@@ -184,12 +184,12 @@ class SyncManager(
     private fun writeSyncDataToCache(context: Context, backup: Backup): Uri? {
         val cacheFile = File(context.cacheDir, "tachiyomi_sync_data.proto.gz")
         return try {
-            FileOutputStream(cacheFile).use { output ->
+            cacheFile.outputStream().use { output ->
                 output.write(ProtoBuf.encodeToByteArray(BackupSerializer, backup))
                 Uri.fromFile(cacheFile)
             }
         } catch (e: IOException) {
-            logcat(LogPriority.ERROR) { "Failed to write sync data to cache" }
+            logcat(LogPriority.ERROR, throwable = e) { "Failed to write sync data to cache" }
             null
         }
     }

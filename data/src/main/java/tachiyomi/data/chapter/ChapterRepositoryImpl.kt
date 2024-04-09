@@ -143,6 +143,7 @@ class ChapterRepositoryImpl(
         dateUpload: Long,
         lastModifiedAt: Long,
         version: Long,
+        @Suppress("UNUSED_PARAMETER")
         isSyncing: Long,
     ): Chapter = Chapter(
         id = id,

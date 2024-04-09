@@ -17,6 +17,8 @@ style:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
   ReturnCount:
+    ignoreFunction:
+      - 'startNow'
     excludeGuardClauses: true
   SerialVersionUIDInSerializableClass:
     active: false
