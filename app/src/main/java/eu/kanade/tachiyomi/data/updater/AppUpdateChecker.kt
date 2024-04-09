@@ -44,9 +44,9 @@ class AppUpdateChecker {
 
 val GITHUB_REPO: String by lazy {
     if (BuildConfig.PREVIEW) {
-        "mihonapp/mihon-preview"
+        "alzhahirdev/mihonsync-preview"
     } else {
-        "mihonapp/mihon"
+        "alzhahirdev/mihonsync"
     }
 }
 
