@@ -51,8 +51,9 @@ jobs:
         if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
         run: |
           set -x
-          if [ inputs.build_ref != '' ]; then
-            echo "VERSION_TAG=inputs.build_ref" >> $GITHUB_ENV
+          build_ref = echo "${{ inputs.build_ref }}"
+          if [ build_ref != '' ]; then
+            echo "VERSION_TAG=build_ref" >> $GITHUB_ENV
           else
             echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
           fi
