@@ -1,5 +1,12 @@
 name: CI
 on:
+  workflow_dispatch:
+    inputs:
+      build_ref:
+        description: 'Release version number'
+        required: true
+        default: '0.16.5'
+        type: string
   push:
     branches:
       - main
@@ -41,13 +48,17 @@ jobs:
       # Sign APK and create release for tags
 
       - name: Get tag name
-        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'alzhahirdev/mihonsync'
+        if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
         run: |
           set -x
-          echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+          if [ ${inputs.build_ref != ''} ]; then
+            echo "VERSION_TAG=${inputs.build_ref}" >> $GITHUB_ENV
+          else
+            echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+          fi
 
       - name: Sign APK
-        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'alzhahirdev/mihonsync'
+        if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
         uses: r0adkll/sign-android-release@349ebdef58775b1e0d8099458af0816dc79b6407 # v1
         with:
           releaseDirectory: app/build/outputs/apk/standard/release
@@ -57,7 +68,7 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Clean up build artifacts
-        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'alzhahirdev/mihonsync'
+        if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
         run: |
           set -e
 
@@ -82,7 +93,7 @@ jobs:
           echo "APK_X86_64_SHA=$sha" >> $GITHUB_ENV
 
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'alzhahirdev/mihonsync'
+        if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
         uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v2.0.4
         with:
           tag_name: ${{ env.VERSION_TAG }}
