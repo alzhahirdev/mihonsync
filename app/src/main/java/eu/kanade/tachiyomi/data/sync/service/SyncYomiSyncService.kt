@@ -30,7 +30,7 @@ class SyncYomiSyncService(
     syncPreferences: SyncPreferences,
     private val notifier: SyncNotifier,
 
-     private val protoBuf: ProtoBuf = Injekt.get(),
+    private val protoBuf: ProtoBuf = Injekt.get(),
 ) : SyncService(context, json, syncPreferences) {
 
     private class SyncYomiException(message: String?) : Exception(message)
@@ -39,7 +39,7 @@ class SyncYomiSyncService(
         try {
             val (remoteData, etag) = pullSyncData()
 
-            val finalSyncData = if (remoteData != null){
+            val finalSyncData = if (remoteData != null) {
                 assert(etag.isNotEmpty()) { "ETag should never be empty if remote data is not null" }
                 logcat(LogPriority.DEBUG, "SyncService") {
                     "Try update remote data with ETag($etag)"
@@ -55,7 +55,6 @@ class SyncYomiSyncService(
 
             pushSyncData(finalSyncData, etag)
             return finalSyncData.backup
-
         } catch (e: Exception) {
             logcat(LogPriority.ERROR) { "Error syncing: ${e.message}" }
             notifier.showSyncError(e.message)
@@ -114,7 +113,6 @@ class SyncYomiSyncService(
                 // return default value so we can overwrite it
                 Pair(null, "")
             }
-
         } else {
             val responseBody = response.body.string()
             notifier.showSyncError("Failed to download sync data: $responseBody")
@@ -166,11 +164,9 @@ class SyncYomiSyncService(
                 .takeIf { it?.isNotEmpty() == true } ?: throw SyncYomiException("Missing ETag")
             syncPreferences.lastSyncEtag().set(newETag)
             logcat(LogPriority.DEBUG) { "SyncYomi sync completed" }
-
         } else if (response.code == HttpStatus.SC_PRECONDITION_FAILED) {
             // other clients updated remote data, will try next time
             logcat(LogPriority.DEBUG) { "SyncYomi sync failed with 412" }
-
         } else {
             val responseBody = response.body.string()
             notifier.showSyncError("Failed to upload sync data: $responseBody")

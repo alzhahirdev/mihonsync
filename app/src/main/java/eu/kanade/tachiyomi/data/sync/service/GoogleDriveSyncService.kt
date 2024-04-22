@@ -75,7 +75,7 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         try {
             val remoteSData = pullSyncData()
 
-            if (remoteSData != null ){
+            if (remoteSData != null) {
                 // Get local unique device ID
                 val localDeviceId = syncPreferences.uniqueDeviceID()
                 val lastSyncDeviceId = remoteSData.deviceId
@@ -85,11 +85,12 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                     "Local device ID: $localDeviceId, Last sync device ID: $lastSyncDeviceId"
                 }
 
-                // check if the last sync was done by the same device if so overwrite the remote data with the local data
+                // check if the last sync was done by the same device,
+                // if so overwrite the remote data with the local data
                 return if (lastSyncDeviceId == localDeviceId) {
                     pushSyncData(syncData)
                     syncData.backup
-                }else{
+                } else {
                     // Merge the local and remote sync data
                     val mergedSyncData = mergeSyncData(syncData, remoteSData)
                     pushSyncData(mergedSyncData)
@@ -162,8 +163,8 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
     }
 
     private fun pullSyncData(): SyncData? {
-        val drive = googleDriveService.driveService ?:
-        throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
+        val drive = googleDriveService.driveService
+            ?: throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
         if (fileList.isEmpty()) {
@@ -205,7 +206,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                         val fileId = fileList[0].id
                         val mediaContent = InputStreamContent("application/gzip", pis)
                         drive.files().update(fileId, null, mediaContent).execute()
-                        logcat(LogPriority.DEBUG) { "Updated existing sync data file in Google Drive with file ID: $fileId" }
+                        logcat(LogPriority.DEBUG) {
+                            "Updated existing sync data file in Google Drive with file ID: $fileId"
+                        }
                     } else {
                         val fileMetadata = File().apply {
                             name = remoteFileName
@@ -216,7 +219,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                         val uploadedFile = drive.files().create(fileMetadata, mediaContent)
                             .setFields("id")
                             .execute()
-                        logcat(LogPriority.DEBUG) { "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}" }
+                        logcat(LogPriority.DEBUG) {
+                            "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}"
+                        }
                     }
                 }
             }
