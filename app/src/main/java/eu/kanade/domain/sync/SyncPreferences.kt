@@ -12,7 +12,8 @@ class SyncPreferences(
     fun clientHost() = preferenceStore.getString("sync_client_host", "https://sync.tachiyomi.org")
     fun clientAPIKey() = preferenceStore.getString("sync_client_api_key", "")
     fun lastSyncTimestamp() = preferenceStore.getLong(Preference.appStateKey("last_sync_timestamp"), 0L)
-
+    fun lastSyncEtag() = preferenceStore.getString("sync_etag", "")
+    
     fun syncInterval() = preferenceStore.getInt("sync_interval", 0)
     fun syncService() = preferenceStore.getInt("sync_service", 0)
 
