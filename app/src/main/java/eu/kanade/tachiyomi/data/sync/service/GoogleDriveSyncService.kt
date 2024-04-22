@@ -19,7 +19,7 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import eu.kanade.domain.sync.SyncPreferences
 import kotlinx.coroutines.delay
-import kotlinx.serialization.encodeToString
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
 import logcat.logcat
@@ -64,7 +64,43 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
 
     private val googleDriveService = GoogleDriveService(context)
 
-    override suspend fun beforeSync() {
+    override suspend fun doSync(syncData: SyncData): Backup? {
+        beforeSync()
+
+        try {
+            val remoteSData = pullSyncData()
+
+            if (remoteSData != null ){
+                // Get local unique device ID
+                val localDeviceId = syncPreferences.uniqueDeviceID()
+                val lastSyncDeviceId = remoteSData.deviceId
+
+                // Log the device IDs
+                logcat(LogPriority.DEBUG, "SyncService") {
+                    "Local device ID: $localDeviceId, Last sync device ID: $lastSyncDeviceId"
+                }
+
+                // check if the last sync was done by the same device if so overwrite the remote data with the local data
+                return if (lastSyncDeviceId == localDeviceId) {
+                    pushSyncData(syncData)
+                    syncData.backup
+                }else{
+                    // Merge the local and remote sync data
+                    val mergedSyncData = mergeSyncData(syncData, remoteSData)
+                    pushSyncData(mergedSyncData)
+                    mergedSyncData.backup
+                }
+            }
+
+            pushSyncData(syncData)
+            return syncData.backup
+        } catch (e: Exception) {
+            logcat(LogPriority.ERROR, "SyncService") { "Error syncing: ${e.message}" }
+            return null
+        }
+    }
+
+    private suspend fun beforeSync() {
         try {
             googleDriveService.refreshToken()
             val drive = googleDriveService.driveService
@@ -120,13 +156,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         }
     }
 
-    override suspend fun pullSyncData(): SyncData? {
-        val drive = googleDriveService.driveService
-
-        if (drive == null) {
-            logcat(LogPriority.DEBUG) { "Google Drive service not initialized" }
-            throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
-        }
+    override fun pullSyncData(): SyncData? {
+        val drive = googleDriveService.driveService ?:
+        throw Exception(context.stringResource(SYMR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
         if (fileList.isEmpty()) {
@@ -137,75 +169,52 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         val gdriveFileId = fileList[0].id
         logcat(LogPriority.DEBUG) { "Google Drive File ID: $gdriveFileId" }
 
-        val outputStream = ByteArrayOutputStream()
         try {
-            drive.files().get(gdriveFileId).executeMediaAndDownloadTo(outputStream)
-            logcat(LogPriority.DEBUG) { "File downloaded successfully" }
+            drive.files().get(gdriveFileId).executeMediaAsInputStream().use { inputStream ->
+                GZIPInputStream(inputStream).use { gzipInputStream ->
+                    return Json.decodeFromStream(SyncData.serializer(), gzipInputStream)
+                }
+            }
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, throwable = e) { "Error downloading file" }
-            return null
-        }
-
-        return withIOContext {
-            try {
-                val gzipInputStream = GZIPInputStream(outputStream.toByteArray().inputStream())
-                val jsonString = gzipInputStream.bufferedReader().use { it.readText() }
-                val syncData = json.decodeFromString(SyncData.serializer(), jsonString)
-                this@GoogleDriveSyncService.logcat(LogPriority.DEBUG) { "JSON deserialized successfully" }
-                syncData
-            } catch (e: Exception) {
-                this@GoogleDriveSyncService.logcat(
-                    LogPriority.ERROR,
-                    throwable = e,
-                ) { "Failed to convert json to sync data with kotlinx.serialization" }
-                throw Exception(e.message, e)
-            }
+            throw Exception("Failed to download sync data: ${e.message}", e)
         }
     }
 
-    override suspend fun pushSyncData(syncData: SyncData) {
-        val jsonData = json.encodeToString(syncData)
+    private suspend fun pushSyncData(syncData: SyncData) {
         val drive = googleDriveService.driveService
             ?: throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        withIOContext {
-            GZIPOutputStream(byteArrayOutputStream).use { gzipOutputStream ->
-                gzipOutputStream.write(jsonData.toByteArray(Charsets.UTF_8))
-            }
-            this@GoogleDriveSyncService.logcat(LogPriority.DEBUG) { "JSON serialized successfully" }
-        }
+        PipedOutputStream().use { pos ->
+            PipedInputStream(pos).use { pis ->
+                withIOContext {
+                    // Start a coroutine or a background thread to write JSON to the PipedOutputStream
+                    launch {
+                        GZIPOutputStream(pos).use { gzipOutputStream ->
+                            Json.encodeToStream(SyncData.serializer(), syncData, gzipOutputStream)
+                        }
+                    }
 
-        val byteArrayContent = ByteArrayContent("application/octet-stream", byteArrayOutputStream.toByteArray())
-
-        try {
-            if (fileList.isNotEmpty()) {
-                // File exists, so update it
-                val fileId = fileList[0].id
-                drive.files().update(fileId, null, byteArrayContent).execute()
-                logcat(LogPriority.DEBUG) { "Updated existing sync data file in Google Drive with file ID: $fileId" }
-            } else {
-                // File doesn't exist, so create it
-                val fileMetadata = File().apply {
-                    name = remoteFileName
-                    mimeType = "application/gzip"
-                    parents = listOf("appDataFolder")
+                    if (fileList.isNotEmpty()) {
+                        val fileId = fileList[0].id
+                        val mediaContent = InputStreamContent("application/gzip", pis)
+                        drive.files().update(fileId, null, mediaContent).execute()
+                        logcat(LogPriority.DEBUG) { "Updated existing sync data file in Google Drive with file ID: $fileId" }
+                    } else {
+                        val fileMetadata = File().apply {
+                            name = remoteFileName
+                            mimeType = "application/gzip"
+                            parents = listOf("appDataFolder")
+                        }
+                        val mediaContent = InputStreamContent("application/gzip", pis)
+                        val uploadedFile = drive.files().create(fileMetadata, mediaContent)
+                            .setFields("id")
+                            .execute()
+                        logcat(LogPriority.DEBUG) { "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}" }
+                    }
                 }
-                val uploadedFile = drive.files().create(fileMetadata, byteArrayContent)
-                    .setFields("id")
-                    .execute()
-
-                logcat(
-                    LogPriority.DEBUG,
-                ) { "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}" }
             }
-
-            // Data has been successfully pushed or updated, delete the lock file
-            deleteLockFile(drive)
-        } catch (e: Exception) {
-            logcat(LogPriority.ERROR, throwable = e) { "Failed to push or update sync data" }
-            throw Exception(context.stringResource(MR.strings.error_uploading_sync_data) + ": ${e.message}", e)
         }
     }
 
@@ -392,7 +401,6 @@ class GoogleDriveService(private val context: Context) {
     }
     internal suspend fun refreshToken() = withIOContext {
         val refreshToken = syncPreferences.googleDriveRefreshToken().get()
-        val accessToken = syncPreferences.googleDriveAccessToken().get()
 
         val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
         val secrets = GoogleClientSecrets.load(
@@ -412,16 +420,12 @@ class GoogleDriveService(private val context: Context) {
 
         credential.refreshToken = refreshToken
 
-        this@GoogleDriveService.logcat(LogPriority.DEBUG) { "Refreshing access token with: $refreshToken" }
-
         try {
             credential.refreshToken()
             val newAccessToken = credential.accessToken
             // Save the new access token
             syncPreferences.googleDriveAccessToken().set(newAccessToken)
             setupGoogleDriveService(newAccessToken, credential.refreshToken)
-            this@GoogleDriveService
-                .logcat(LogPriority.DEBUG) { "Google Access token refreshed old: $accessToken new: $newAccessToken" }
         } catch (e: TokenResponseException) {
             if (e.details.error == "invalid_grant") {
                 // The refresh token is invalid, prompt the user to sign in again
