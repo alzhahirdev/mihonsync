@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
 
       - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@5188e9b5527a0a094cee21e2fe9a8ca44b4629af # v3.3.1
+        uses: gradle/wrapper-validation-action@216d1ad2b3710bf005dc39237337b9673fd8fcd5 # v3.3.2
 
       - name: Setup Android SDK
         run: |
@@ -40,7 +40,7 @@ jobs:
           distribution: adopt
 
       - name: Set up gradle
-        uses: gradle/actions/setup-gradle@750cdda3edd6d51b7fdfc069d2e2818cf3c44f4c # v3.3.1
+        uses: gradle/actions/setup-gradle@db19848a5fa7950289d3668fb053140cf3028d43 # v3.3.2
 
       - name: Build app and run unit tests
         run: ./gradlew detekt assembleStandardRelease testReleaseUnitTest
@@ -96,7 +96,7 @@ jobs:
 
       - name: Create Release
         if: (inputs.build_ref != '' || startsWith(github.ref, 'refs/tags/')) && github.repository == 'alzhahirdev/mihonsync'
-        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v2.0.4
+        uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87 # v2.0.5
         with:
           tag_name: ${{ env.VERSION_TAG }}
           name: MihonSync ${{ env.VERSION_TAG }}
