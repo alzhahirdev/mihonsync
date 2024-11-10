@@ -26,9 +26,9 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,6 +45,8 @@ import dev.icerock.moko.resources.StringResource
 import tachiyomi.core.common.preference.Preference
 import tachiyomi.core.common.preference.TriState
 import tachiyomi.core.common.preference.toggle
+import tachiyomi.presentation.core.components.material.DISABLED_ALPHA
+import tachiyomi.presentation.core.components.material.Slider
 import tachiyomi.presentation.core.components.material.padding
 import tachiyomi.presentation.core.i18n.stringResource
 import tachiyomi.presentation.core.theme.header
@@ -54,8 +56,6 @@ object SettingsItemsPaddings {
     val Horizontal = 24.dp
     val Vertical = 10.dp
 }
-
-private const val DisabledContentAlpha = 0.38f
 
 @Composable
 fun HeadingItem(labelRes: StringResource) {
@@ -99,12 +99,21 @@ fun SortItem(label: String, sortDescending: Boolean?, onClick: () -> Unit) {
         null -> null
     }
 
+    BaseSortItem(
+        label = label,
+        icon = arrowIcon,
+        onClick = onClick,
+    )
+}
+
+@Composable
+fun BaseSortItem(label: String, icon: ImageVector?, onClick: () -> Unit) {
     BaseSettingsItem(
         label = label,
         widget = {
-            if (arrowIcon != null) {
+            if (icon != null) {
                 Icon(
-                    imageVector = arrowIcon,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                 )
@@ -184,17 +193,14 @@ fun SliderItem(
         }
 
         Slider(
-            value = value.toFloat(),
-            onValueChange = {
-                val newValue = it.toInt()
-                if (newValue != value) {
-                    onChange(newValue)
-                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                }
-            },
             modifier = Modifier.weight(1.5f),
-            valueRange = min.toFloat()..max.toFloat(),
-            steps = max - min,
+            value = value,
+            onValueChange = f@{
+                if (it == value) return@f
+                onChange(it)
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            },
+            valueRange = min..max,
         )
     }
 }
@@ -214,7 +220,7 @@ fun SelectItem(
     ) {
         OutlinedTextField(
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
                 .padding(
                     horizontal = SettingsItemsPaddings.Horizontal,
@@ -279,7 +285,7 @@ fun TriStateItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.large),
     ) {
-        val stateAlpha = if (enabled && onClick != null) 1f else DisabledContentAlpha
+        val stateAlpha = if (enabled && onClick != null) 1f else DISABLED_ALPHA
 
         Icon(
             imageVector = when (state) {
@@ -292,7 +298,7 @@ fun TriStateItem(
                 MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = stateAlpha)
             } else {
                 when (onClick) {
-                    null -> MaterialTheme.colorScheme.onSurface.copy(alpha = DisabledContentAlpha)
+                    null -> MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_ALPHA)
                     else -> MaterialTheme.colorScheme.primary
                 }
             },
