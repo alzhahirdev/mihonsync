@@ -12,6 +12,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.ByteArrayContent
+import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -33,6 +34,8 @@ import tachiyomi.i18n.MR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.io.IOException
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.time.Instant
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
@@ -76,7 +79,7 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         try {
             val remoteSData = pullSyncData()
 
-            if (remoteSData != null ){
+            if (remoteSData != null) {
                 // Get local unique device ID
                 val localDeviceId = syncPreferences.uniqueDeviceID()
                 val lastSyncDeviceId = remoteSData.deviceId
@@ -86,11 +89,12 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                     "Local device ID: $localDeviceId, Last sync device ID: $lastSyncDeviceId"
                 }
 
-                // check if the last sync was done by the same device if so overwrite the remote data with the local data
+                // check if the last sync was done by the same device,
+                // if so overwrite the remote data with the local data
                 return if (lastSyncDeviceId == localDeviceId) {
                     pushSyncData(syncData)
                     syncData.backup
-                }else{
+                } else {
                     // Merge the local and remote sync data
                     val mergedSyncData = mergeSyncData(syncData, remoteSData)
                     pushSyncData(mergedSyncData)
@@ -176,11 +180,6 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         logcat(LogPriority.DEBUG) { "Google Drive File ID: $gdriveFileId" }
 
         try {
-//            drive.files().get(gdriveFileId).executeMediaAsInputStream().use { inputStream ->
-//                GZIPInputStream(inputStream).use { gzipInputStream ->
-//                    return Json.decodeFromStream(SyncData.serializer(), gzipInputStream)
-//                }
-//            }
             drive.files().get(gdriveFileId).executeMediaAsInputStream().use { inputStream ->
                 GZIPInputStream(inputStream).use { gzipInputStream ->
                     val byteArray = gzipInputStream.readBytes()
@@ -222,7 +221,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                         val fileId = fileList[0].id
                         val mediaContent = InputStreamContent("application/gzip", pis)
                         drive.files().update(fileId, null, mediaContent).execute()
-                        logcat(LogPriority.DEBUG) { "Updated existing sync data file in Google Drive with file ID: $fileId" }
+                        logcat(LogPriority.DEBUG) {
+                            "Updated existing sync data file in Google Drive with file ID: $fileId"
+                        }
                     } else {
                         val fileMetadata = File().apply {
                             name = remoteFileName
@@ -233,7 +234,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                         val uploadedFile = drive.files().create(fileMetadata, mediaContent)
                             .setFields("id")
                             .execute()
-                        logcat(LogPriority.DEBUG) { "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}" }
+                        logcat(LogPriority.DEBUG) {
+                            "Created new sync data file in Google Drive with file ID: ${uploadedFile.id}"
+                        }
                     }
                 }
             }

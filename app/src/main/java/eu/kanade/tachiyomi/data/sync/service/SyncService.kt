@@ -26,7 +26,7 @@ abstract class SyncService(
     val syncPreferences: SyncPreferences,
 ) {
 
-    abstract suspend fun doSync(syncData: SyncData): Backup?;
+    abstract suspend fun doSync(syncData: SyncData): Backup?
 
     /**
      * Merges the local and remote sync data into a single JSON string.
@@ -44,7 +44,8 @@ abstract class SyncService(
             remoteSyncData.backup?.backupManga,
             localSyncData.backup?.backupCategories ?: emptyList(),
             remoteSyncData.backup?.backupCategories ?: emptyList(),
-            mergedCategoriesList)
+            mergedCategoriesList
+        )
 
         val mergedSourcesList =
             mergeSourcesLists(localSyncData.backup?.backupSources, remoteSyncData.backup?.backupSources)
@@ -109,11 +110,13 @@ abstract class SyncService(
         val mergedCategoriesMapByName = mergedCategories.associateBy { it.name }
 
         fun updateCategories(theManga: BackupManga, theMap: Map<Long, BackupCategory>): BackupManga {
-            return theManga.copy(categories = theManga.categories.mapNotNull {
-                theMap[it]?.let { category ->
-                    mergedCategoriesMapByName[category.name]?.order
+            return theManga.copy(
+                categories = theManga.categories.mapNotNull {
+                    theMap[it]?.let { category ->
+                        mergedCategoriesMapByName[category.name]?.order
+                    }
                 }
-            })
+            )
         }
 
         logcat(LogPriority.DEBUG, logTag) {
