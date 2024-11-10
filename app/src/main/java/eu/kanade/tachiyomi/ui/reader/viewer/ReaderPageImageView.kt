@@ -19,6 +19,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.os.postDelayed
 import androidx.core.view.isVisible
 import coil3.BitmapImage
+import coil3.asDrawable
 import coil3.dispose
 import coil3.imageLoader
 import coil3.request.CachePolicy
@@ -32,6 +33,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.EASE_IN_OUT
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.EASE_OUT_QUAD
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
 import com.github.chrisbanes.photoview.PhotoView
+import eu.kanade.domain.base.BasePreferences
 import eu.kanade.tachiyomi.data.coil.cropBorders
 import eu.kanade.tachiyomi.data.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
@@ -39,6 +41,9 @@ import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import eu.kanade.tachiyomi.util.view.isVisibleOnScreen
 import okio.BufferedSource
+import tachiyomi.core.common.util.system.ImageUtil
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * A wrapper view for showing page image.
@@ -55,6 +60,8 @@ open class ReaderPageImageView @JvmOverloads constructor(
     @StyleRes defStyleRes: Int = 0,
     private val isWebtoon: Boolean = false,
 ) : FrameLayout(context, attrs, defStyleAttrs, defStyleRes) {
+
+    private val alwaysUseSSIVToDecode by lazy { Injekt.get<BasePreferences>().alwaysUseSSIVToDecode().get() }
 
     private var pageView: View? = null
 
@@ -287,35 +294,42 @@ open class ReaderPageImageView @JvmOverloads constructor(
             },
         )
 
-        if (isWebtoon) {
-            val request = ImageRequest.Builder(context)
-                .data(data)
-                .memoryCachePolicy(CachePolicy.DISABLED)
-                .diskCachePolicy(CachePolicy.DISABLED)
-                .target(
-                    onSuccess = { result ->
-                        val image = result as BitmapImage
-                        setImage(ImageSource.bitmap(image.bitmap))
-                        isVisible = true
-                    },
-                    onError = {
-                        this@ReaderPageImageView.onImageLoadError()
-                    },
-                )
-                .size(ViewSizeResolver(this@ReaderPageImageView))
-                .precision(Precision.INEXACT)
-                .cropBorders(config.cropBorders)
-                .customDecoder(true)
-                .crossfade(false)
-                .build()
-            context.imageLoader.enqueue(request)
-        } else {
-            when (data) {
-                is BitmapDrawable -> setImage(ImageSource.bitmap(data.bitmap))
-                is BufferedSource -> setImage(ImageSource.inputStream(data.inputStream()))
-                else -> throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
+        when (data) {
+            is BitmapDrawable -> {
+                setImage(ImageSource.bitmap(data.bitmap))
+                isVisible = true
             }
-            isVisible = true
+            is BufferedSource -> {
+                if (alwaysUseSSIVToDecode || !isWebtoon || !ImageUtil.canUseCoilToDecode(data)) {
+                    setImage(ImageSource.inputStream(data.inputStream()))
+                    isVisible = true
+                } else {
+                    val request = ImageRequest.Builder(context)
+                        .data(data)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .target(
+                            onSuccess = { result ->
+                                val image = result as BitmapImage
+                                setImage(ImageSource.bitmap(image.bitmap))
+                                isVisible = true
+                            },
+                            onError = {
+                                this@ReaderPageImageView.onImageLoadError()
+                            },
+                        )
+                        .size(ViewSizeResolver(this@ReaderPageImageView))
+                        .precision(Precision.INEXACT)
+                        .cropBorders(config.cropBorders)
+                        .customDecoder(true)
+                        .crossfade(false)
+                        .build()
+                    context.imageLoader.enqueue(request)
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")
+            }
         }
     }
 
@@ -403,7 +417,9 @@ open class ReaderPageImageView @JvmOverloads constructor(
     )
 
     enum class ZoomStartPosition {
-        LEFT, CENTER, RIGHT
+        LEFT,
+        CENTER,
+        RIGHT,
     }
 }
 

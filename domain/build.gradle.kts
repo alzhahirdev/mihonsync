@@ -13,6 +13,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi")
+    }
+}
+
 dependencies {
     implementation(projects.sourceApi)
     implementation(projects.core.common)
@@ -25,15 +31,8 @@ dependencies {
 
     api(libs.sqldelight.android.paging)
 
+    compileOnly(libs.compose.stablemarker)
+
     testImplementation(libs.bundles.test)
     testImplementation(kotlinx.coroutines.test)
-}
-
-tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += listOf(
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-Xcontext-receivers",
-        )
-    }
 }

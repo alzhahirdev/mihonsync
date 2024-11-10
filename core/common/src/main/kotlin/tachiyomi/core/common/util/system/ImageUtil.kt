@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.webkit.MimeTypeMap
 import androidx.annotation.ColorInt
 import androidx.core.graphics.alpha
 import androidx.core.graphics.applyCanvas
@@ -23,13 +22,13 @@ import androidx.core.graphics.get
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import com.hippo.unifile.UniFile
+import eu.kanade.tachiyomi.util.system.GLUtil
 import logcat.LogPriority
 import okio.Buffer
 import okio.BufferedSource
 import tachiyomi.decoder.Format
 import tachiyomi.decoder.ImageDecoder
 import java.io.InputStream
-import java.net.URLConnection
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.max
@@ -40,12 +39,8 @@ object ImageUtil {
     fun isImage(name: String?, openStream: (() -> InputStream)? = null): Boolean {
         if (name == null) return false
 
-        val contentType = try {
-            URLConnection.guessContentTypeFromName(name)
-        } catch (e: Exception) {
-            null
-        } ?: openStream?.let { findImageType(it)?.mime }
-        return contentType?.startsWith("image/") ?: false
+        val extension = name.substringAfterLast('.')
+        return ImageType.entries.any { it.extension == extension } || openStream?.let { findImageType(it) } != null
     }
 
     fun findImageType(openStream: () -> InputStream): ImageType? {
@@ -69,10 +64,9 @@ object ImageUtil {
         }
     }
 
-    fun getExtensionFromMimeType(mime: String?): String {
-        return MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
-            ?: SUPPLEMENTARY_MIMETYPE_MAPPING[mime]
-            ?: "jpg"
+    fun getExtensionFromMimeType(mime: String?, openStream: () -> InputStream): String {
+        val type = mime?.let { ImageType.entries.find { it.mime == mime } } ?: findImageType(openStream)
+        return type?.extension ?: "jpg"
     }
 
     fun isAnimatedAndSupported(source: BufferedSource): Boolean {
@@ -316,6 +310,11 @@ object ImageUtil {
         val bottomOffset = topOffset + splitHeight
     }
 
+    fun canUseCoilToDecode(imageSource: BufferedSource): Boolean {
+        val options = extractImageOptions(imageSource)
+        return maxOf(options.outWidth, options.outHeight) <= GLUtil.maxTextureSize
+    }
+
     /**
      * Algorithm for determining what background to accompany a comic/manga page
      */
@@ -507,16 +506,20 @@ object ImageUtil {
             darkBG -> {
                 return ColorDrawable(blackColor)
             }
-            topIsBlackStreak || (
-                topCornersIsDark && topOffsetCornersIsDark &&
-                    (topMidIsDark || overallBlackPixels > 9)
-                ) -> {
+            topIsBlackStreak ||
+                (
+                    topCornersIsDark &&
+                        topOffsetCornersIsDark &&
+                        (topMidIsDark || overallBlackPixels > 9)
+                    ) -> {
                 intArrayOf(blackColor, blackColor, whiteColor, whiteColor)
             }
-            bottomIsBlackStreak || (
-                botCornersIsDark && botOffsetCornersIsDark &&
-                    (bottomCenterPixel.isDark() || overallBlackPixels > 9)
-                ) -> {
+            bottomIsBlackStreak ||
+                (
+                    botCornersIsDark &&
+                        botOffsetCornersIsDark &&
+                        (bottomCenterPixel.isDark() || overallBlackPixels > 9)
+                    ) -> {
                 intArrayOf(whiteColor, whiteColor, blackColor, blackColor)
             }
             else -> {
@@ -558,12 +561,6 @@ object ImageUtil {
     }
 
     private val optimalImageHeight = getDisplayMaxHeightInPx * 2
-
-    // Android doesn't include some mappings
-    private val SUPPLEMENTARY_MIMETYPE_MAPPING = mapOf(
-        // https://issuetracker.google.com/issues/182703810
-        "image/jxl" to "jxl",
-    )
 }
 
 val getDisplayMaxHeightInPx: Int
