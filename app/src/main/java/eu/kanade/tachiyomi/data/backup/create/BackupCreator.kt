@@ -147,6 +147,12 @@ class BackupCreator(
         return preferenceBackupCreator.createSource(includePrivatePreferences = options.privateSettings)
     }
 
+    suspend fun backupExtensionRepos(options: BackupOptions): List<BackupExtensionRepos> {
+        if (!options.extensionRepoSettings) return emptyList()
+
+        return extensionRepoBackupCreator()
+    }
+
     companion object {
         private const val MAX_AUTO_BACKUPS: Int = 4
         private val FILENAME_REGEX = """${BuildConfig.APPLICATION_ID}_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}.tachibk""".toRegex()

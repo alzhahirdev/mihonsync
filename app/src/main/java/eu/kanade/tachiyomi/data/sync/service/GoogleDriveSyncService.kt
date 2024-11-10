@@ -10,6 +10,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
+import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
@@ -18,9 +19,11 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import eu.kanade.domain.sync.SyncPreferences
+import eu.kanade.tachiyomi.data.backup.models.Backup
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.protobuf.ProtoBuf
 import logcat.LogPriority
 import logcat.logcat
 import tachiyomi.core.common.i18n.stringResource
@@ -29,9 +32,10 @@ import tachiyomi.core.common.util.system.logcat
 import tachiyomi.i18n.MR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.Instant
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
@@ -63,6 +67,8 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
     private val lockFileName = "${appName}_sync.lock"
 
     private val googleDriveService = GoogleDriveService(context)
+
+    private val protoBuf: ProtoBuf = Injekt.get()
 
     override suspend fun doSync(syncData: SyncData): Backup? {
         beforeSync()
@@ -156,9 +162,9 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         }
     }
 
-    override fun pullSyncData(): SyncData? {
+    private fun pullSyncData(): SyncData? {
         val drive = googleDriveService.driveService ?:
-        throw Exception(context.stringResource(SYMR.strings.google_drive_not_signed_in))
+        throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
         if (fileList.isEmpty()) {
@@ -170,9 +176,17 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
         logcat(LogPriority.DEBUG) { "Google Drive File ID: $gdriveFileId" }
 
         try {
+//            drive.files().get(gdriveFileId).executeMediaAsInputStream().use { inputStream ->
+//                GZIPInputStream(inputStream).use { gzipInputStream ->
+//                    return Json.decodeFromStream(SyncData.serializer(), gzipInputStream)
+//                }
+//            }
             drive.files().get(gdriveFileId).executeMediaAsInputStream().use { inputStream ->
                 GZIPInputStream(inputStream).use { gzipInputStream ->
-                    return Json.decodeFromStream(SyncData.serializer(), gzipInputStream)
+                    val byteArray = gzipInputStream.readBytes()
+                    val backup = protoBuf.decodeFromByteArray(Backup.serializer(), byteArray)
+                    val deviceId = fileList[0].appProperties["deviceId"] ?: ""
+                    return SyncData(deviceId = deviceId, backup = backup)
                 }
             }
         } catch (e: Exception) {
@@ -186,13 +200,21 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
             ?: throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
+        val backup = syncData.backup ?: return
+
+        val byteArray = protoBuf.encodeToByteArray(Backup.serializer(), backup)
+        if (byteArray.isEmpty()) {
+            throw IllegalStateException(context.stringResource(MR.strings.empty_backup_error))
+        }
+
         PipedOutputStream().use { pos ->
             PipedInputStream(pos).use { pis ->
                 withIOContext {
                     // Start a coroutine or a background thread to write JSON to the PipedOutputStream
                     launch {
                         GZIPOutputStream(pos).use { gzipOutputStream ->
-                            Json.encodeToStream(SyncData.serializer(), syncData, gzipOutputStream)
+                            //Json.encodeToStream(SyncData.serializer(), syncData, gzipOutputStream)
+                            gzipOutputStream.write(byteArray)
                         }
                     }
 
