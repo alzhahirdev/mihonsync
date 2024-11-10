@@ -10,7 +10,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
-import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.client.http.InputStreamContent
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -37,8 +36,6 @@ import java.io.IOException
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
 import java.time.Instant
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
@@ -167,8 +164,8 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
     }
 
     private fun pullSyncData(): SyncData? {
-        val drive = googleDriveService.driveService ?:
-        throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
+        val drive = googleDriveService.driveService
+            ?: throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))
 
         val fileList = getAppDataFileList(drive)
         if (fileList.isEmpty()) {
@@ -212,7 +209,7 @@ class GoogleDriveSyncService(context: Context, json: Json, syncPreferences: Sync
                     // Start a coroutine or a background thread to write JSON to the PipedOutputStream
                     launch {
                         GZIPOutputStream(pos).use { gzipOutputStream ->
-                            //Json.encodeToStream(SyncData.serializer(), syncData, gzipOutputStream)
+                            // Json.encodeToStream(SyncData.serializer(), syncData, gzipOutputStream)
                             gzipOutputStream.write(byteArray)
                         }
                     }

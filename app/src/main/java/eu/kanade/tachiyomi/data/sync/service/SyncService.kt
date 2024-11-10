@@ -44,7 +44,7 @@ abstract class SyncService(
             remoteSyncData.backup?.backupManga,
             localSyncData.backup?.backupCategories ?: emptyList(),
             remoteSyncData.backup?.backupCategories ?: emptyList(),
-            mergedCategoriesList
+            mergedCategoriesList,
         )
 
         val mergedSourcesList =
@@ -115,7 +115,7 @@ abstract class SyncService(
                     theMap[it]?.let { category ->
                         mergedCategoriesMapByName[category.name]?.order
                     }
-                }
+                },
             )
         }
 
@@ -139,7 +139,7 @@ abstract class SyncService(
                         }
                         updateCategories(
                             local.copy(chapters = mergeChapters(local.chapters, remote.chapters)),
-                            localCategoriesMapByOrder
+                            localCategoriesMapByOrder,
                         )
                     } else {
                         logcat(LogPriority.DEBUG, logTag) {
@@ -147,7 +147,7 @@ abstract class SyncService(
                         }
                         updateCategories(
                             remote.copy(chapters = mergeChapters(local.chapters, remote.chapters)),
-                            remoteCategoriesMapByOrder
+                            remoteCategoriesMapByOrder,
                         )
                     }
                 }
@@ -293,7 +293,7 @@ abstract class SyncService(
 
     private fun mergeSourcesLists(
         localSources: List<BackupSource>?,
-        remoteSources: List<BackupSource>?
+        remoteSources: List<BackupSource>?,
     ): List<BackupSource> {
         val logTag = "MergeSources"
 
@@ -338,7 +338,7 @@ abstract class SyncService(
 
     private fun mergePreferencesLists(
         localPreferences: List<BackupPreference>?,
-        remotePreferences: List<BackupPreference>?
+        remotePreferences: List<BackupPreference>?,
     ): List<BackupPreference> {
         val logTag = "MergePreferences"
 
@@ -386,7 +386,7 @@ abstract class SyncService(
 
     private fun mergeSourcePreferencesLists(
         localPreferences: List<BackupSourcePreferences>?,
-        remotePreferences: List<BackupSourcePreferences>?
+        remotePreferences: List<BackupSourcePreferences>?,
     ): List<BackupSourcePreferences> {
         val logTag = "MergeSourcePreferences"
 
@@ -442,7 +442,7 @@ abstract class SyncService(
 
     private fun mergeIndividualPreferences(
         localPrefs: List<BackupPreference>,
-        remotePrefs: List<BackupPreference>
+        remotePrefs: List<BackupPreference>,
     ): List<BackupPreference> {
         val mergedPrefsMap = (localPrefs + remotePrefs).associateBy { it.key }
         return mergedPrefsMap.values.toList()
