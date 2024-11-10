@@ -749,6 +749,7 @@
     <ID>MaxLineLength:SyncService.kt$SyncService$*</ID>
     <ID>MaxLineLength:SyncService.kt$SyncService$val</ID>
     <ID>MaxLineLength:SyncService.kt$*</ID>
+    <ID>MaxLineLength:GoogleDriveSyncService.kt$*</ID>
     <ID>MaxLineLength:WebViewUtil.kt$WebViewUtil$*</ID>
     <ID>MaximumLineLength:SyncService.kt$SyncService$ </ID>
     <ID>MemberNameEqualsClassName:ExtensionInstaller.kt$ExtensionInstaller$private val extensionInstaller = Injekt.get&lt;BasePreferences&gt;().extensionInstaller()</ID>
@@ -845,7 +846,7 @@
     <ID>NestedBlockDepth:DownloadQueueScreenModel.kt$DownloadQueueScreenModel.&lt;no name provided&gt;$override fun onMenuItemClick(position: Int, menuItem: MenuItem)</ID>
     <ID>NestedBlockDepth:Downloader.kt$Downloader$private fun archiveChapter( mangaDir: UniFile, dirname: String, tmpDir: UniFile, )</ID>
     <ID>NestedBlockDepth:ExtensionInstaller.kt$ExtensionInstaller$fun installApk(downloadId: Long, uri: Uri)</ID>
-    <ID>NestedBlockDepth:GoogleDriveSyncService.kt$GoogleDriveSyncService$override suspend fun beforeSync()</ID>
+    <ID>NestedBlockDepth:GoogleDriveSyncService.kt$GoogleDriveSyncService$private suspend fun beforeSync()</ID>
     <ID>NestedBlockDepth:ImageUtil.kt$ImageUtil$fun chooseBackground(context: Context, imageStream: InputStream): Drawable</ID>
     <ID>NestedBlockDepth:KavitaApi.kt$KavitaApi$fun getNewToken(apiUrl: String, apiKey: String): String?</ID>
     <ID>NestedBlockDepth:KavitaApi.kt$KavitaApi$private fun getLatestChapterRead(url: String): Double</ID>
@@ -878,7 +879,9 @@
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$fun installPrivateExtensionFile(context: Context, file: File): Boolean</ID>
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$private fun loadExtension(context: Context, extensionInfo: ExtensionInfo): LoadResult</ID>
     <ID>ReturnCount:ExtensionLoader.kt$ExtensionLoader$private fun selectExtensionPackage(shared: ExtensionInfo?, private: ExtensionInfo?): ExtensionInfo?</ID>
+    <ID>ReturnCount:SyncYomiSyncService.kt$SyncYomiSyncService$private suspend fun pullSyncData(): Pair&lt;SyncData?, String&gt;</ID>
     <ID>ReturnCount:GoogleDriveSyncService.kt$GoogleDriveSyncService$override suspend fun pullSyncData(): SyncData?</ID>
+    <ID>ReturnCount:GoogleDriveSyncService.kt$GoogleDriveSyncService$override suspend fun doSync(syncData: SyncData): Backup?</ID>
     <ID>ReturnCount:HttpPageLoader.kt$HttpPageLoader$private fun preloadNextPages(currentPage: ReaderPage, amount: Int): List&lt;PriorityPage&gt;</ID>
     <ID>ReturnCount:ImageUtil.kt$ImageUtil$fun chooseBackground(context: Context, imageStream: InputStream): Drawable</ID>
     <ID>ReturnCount:ImageUtil.kt$ImageUtil$fun isAnimatedAndSupported(stream: InputStream): Boolean</ID>
@@ -994,6 +997,7 @@
     <ID>ThrowsCount:FileExtensions.kt$fun File.copyAndSetReadOnlyTo(target: File, overwrite: Boolean = false, bufferSize: Int = DEFAULT_BUFFER_SIZE): File</ID>
     <ID>ThrowsCount:KavitaApi.kt$KavitaApi$fun getNewToken(apiUrl: String, apiKey: String): String?</ID>
     <ID>ThrowsCount:LocalSource.kt$LocalSource$fun getFormat(chapter: SChapter): Format</ID>
+    <ID>ThrowsCount:GoogleDriveSyncService.kt$GoogleDriveSyncService$private suspend fun beforeSync()</ID>
     <ID>TooGenericExceptionCaught:AboutScreen.kt$AboutScreen$e: Exception</ID>
     <ID>TooGenericExceptionCaught:AddTracks.kt$AddTracks$e: Exception</ID>
     <ID>TooGenericExceptionCaught:AndroidPreference.kt$AndroidPreference.Object$e: Exception</ID>
@@ -1047,6 +1051,7 @@
     <ID>TooGenericExceptionCaught:GlobalExceptionHandler.kt$GlobalExceptionHandler.Companion$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GoogleDriveSyncService.kt$GoogleDriveService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:GoogleDriveSyncService.kt$GoogleDriveSyncService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SyncYomiSyncService.kt$SyncYomiSyncService$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HistoryRepositoryImpl.kt$HistoryRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:HttpPageLoader.kt$HttpPageLoader$e: Throwable</ID>
     <ID>TooGenericExceptionCaught:ImageSaver.kt$ImageSaver$e: Exception</ID>
@@ -1135,6 +1140,7 @@
     <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.error_uploading_sync_data) + ": ${e.message}", e)</ID>
     <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(context.stringResource(MR.strings.google_drive_not_signed_in))</ID>
     <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception(e.message, e)</ID>
+    <ID>TooGenericExceptionThrown:GoogleDriveSyncService.kt$GoogleDriveSyncService$throw Exception("Failed to download sync data: ${e.message}", e)</ID>
     <ID>TooGenericExceptionThrown:HttpSource.kt$HttpSource$throw RuntimeException(e)</ID>
     <ID>TooGenericExceptionThrown:KitsuApi.kt$KitsuApi$throw Exception("Could not find manga")</ID>
     <ID>TooGenericExceptionThrown:KitsuInterceptor.kt$KitsuInterceptor$throw Exception("Not authenticated with Kitsu")</ID>
