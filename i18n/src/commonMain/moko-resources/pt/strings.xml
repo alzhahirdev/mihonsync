@@ -577,7 +577,6 @@
     <string name="source_filter_empty_screen">Nenhuma fonte instalada encontrada</string>
     <string name="notification_update_error">%1$d actualização(ões) falhada(s)</string>
     <string name="learn_more">Toque para saber mais</string>
-    <string name="update_check_fdroid_migration_info">Uma nova versão está disponível a partir dos lançamentos oficiais. Toque para saber como migrar de versões não oficiais do F-Droid.</string>
     <string name="pref_navigate_pan">Imagens panorâmicas</string>
     <string name="pref_landscape_zoom">Ampliar imagem horizontal</string>
     <string name="update_check_open">Abrir no GitHub</string>
@@ -670,7 +669,7 @@
     <string name="label_read_duration">Duração de leitura</string>
     <string name="pref_security_summary">Bloqueio da app, ecrã seguro</string>
     <string name="pref_advanced_summary">Exportar registos de travamento, otimizações de bateria</string>
-    <string name="pref_invalidate_download_cache">Invalidar o índice de descargas</string>
+    <string name="pref_invalidate_download_cache">Reindexar descargas</string>
     <string name="track_remove_finish_date_conf_text">Isto irá remover a sua data de término selecionada anteriormente no %s</string>
     <string name="minute_short">%dm</string>
     <string name="action_not_now">Agora não</string>
@@ -695,13 +694,11 @@
     <string name="overlay_header">Sobreposição</string>
     <string name="pref_page_rotate">Girar páginas largas para caber</string>
     <string name="pref_page_rotate_invert">Virar a orientação de páginas largas giradas</string>
-    <string name="pref_library_columns_per_row">%d por linha</string>
     <string name="pref_chapter_swipe_start">Ação de deslizar para a esquerda</string>
     <string name="pref_double_tap_zoom">Toque duplo para aproximar</string>
     <string name="action_set_interval">Definir intervalo</string>
     <string name="pref_update_only_in_release_period">Fora do período esperado de lançamento</string>
     <string name="pref_debug_info">Informações de depuração</string>
-    <string name="pref_chapter_swipe">Trocar de capítulo</string>
     <string name="pref_chapter_swipe_end">Ação de deslizar para a direita</string>
     <string name="intervals_header">intervalos</string>
     <string name="manga_display_interval_title">Estimado a cada</string>
@@ -745,7 +742,6 @@
     <string name="syncing_library">A sincronizar a biblioteca</string>
     <string name="notification_updating_progress">A atualizar a biblioteca… (%s)</string>
     <string name="exception_http">HTTP %d, verifique o site na WebView</string>
-    <string name="sort_category_confirmation">Deseja ordenar as categorias alfabeticamente?</string>
     <string name="action_sort_tracker_score">Avaliação no monitorador</string>
     <string name="action_apply">Aplicar</string>
     <string name="action_ok">OK</string>
@@ -793,7 +789,6 @@
 \nPasta selecionada: %2$s</string>
     <string name="exclude_scanlators">Apagar scanlators</string>
     <string name="no_scanlators_found">Nenhum scanlator encontrado</string>
-    <string name="action_sort_category">Ordenar as categorias</string>
     <string name="action_move_to_bottom_all_for_series">Mover série para o final</string>
     <string name="pref_onboarding_guide">Guia de introdução</string>
     <string name="pref_library_update_smart_update">Atualização inteligente</string>
@@ -810,4 +805,31 @@
     <string name="pref_webtoon_disable_zoom_out">Desativar redução de zoom</string>
     <string name="action_view_upcoming">Exibir as próximas atualizações</string>
     <string name="label_upcoming">A seguir</string>
+    <string name="non_library_settings">Todas as entradas lidas</string>
+    <string name="action_copy_link">Copiar link</string>
+    <string name="pref_flash_style_black">Preto</string>
+    <string name="pref_flash_style_white">Branco</string>
+    <string name="invalid_backup_file_json">Cópia de segurança JSON não suportada</string>
+    <string name="invalid_backup_file_unknown">Ficheiro de Cópia de Segurança corrompido</string>
+    <string name="extensionRepo_settings">Repositórios de Extensões</string>
+    <string name="action_sort_random">Aleatório</string>
+    <string name="onboarding_permission_analytics_description">Enviar dados de utilização anónimos para melhorar funções da aplicação.</string>
+    <string name="firebase_summary">A enviar logs de crash e estatísticas para permitir-nos identificar e resolver problemas, melhorar a performance e realizar futuras atualizações que sejam mais revelantes aos teus desejos</string>
+    <string name="pref_firebase">Estatíscas e Logs de Crash</string>
+    <string name="pref_auto_update_manga_on_mark_read">Atualizar progresso quando for marcado como lido</string>
+    <string name="manga_interval_expected_update_null">Este mangá ou está completo ou ainda não tem uma data de lançamento prevista.</string>
+    <string name="trackers_updated_summary">Trackers atualizados para o capítulo %d</string>
+    <string name="file_picker_uri_permission_unsupported">Erro ao adquirir acesso persistente à pasta. A aplicação pode apresentar certos erros</string>
+    <string name="onboarding_permission_crashlytics">Enviar logs de crash</string>
+    <string name="onboarding_permission_crashlytics_description">Enviar logs de crash anónimos para os desenvolvedores.</string>
+    <string name="onboarding_permission_analytics">Permitir estatísticas</string>
+    <string name="pref_security">Segurança</string>
+    <string name="pref_flash_duration_summary">%1$s ms</string>
+    <string name="pref_flash_style_white_black">Branco e Preto</string>
+    <string name="ext_remove">Remover</string>
+    <string name="ext_confirm_remove">Remover Extensão?</string>
+    <string name="remove_private_extension_message">Queres mesmo remover a extensão: \"%s\"?</string>
+    <string name="pref_download_new_unread_chapters_only">Ignorar dar download a capítulos já lidos duplicados</string>
+    <string name="confirm_tracker_update">"Atualizar  os tracker para o capítulo  %d?"</string>
+    <string name="add_repo_confirmation">Desejas adicionar o seguinte repositório: \"%s\"?</string>
 </resources>

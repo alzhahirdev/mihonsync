@@ -37,7 +37,6 @@ import eu.kanade.domain.base.BasePreferences
 import eu.kanade.tachiyomi.data.coil.cropBorders
 import eu.kanade.tachiyomi.data.coil.customDecoder
 import eu.kanade.tachiyomi.ui.reader.viewer.webtoon.WebtoonSubsamplingImageView
-import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import eu.kanade.tachiyomi.util.view.isVisibleOnScreen
 import okio.BufferedSource
@@ -61,7 +60,9 @@ open class ReaderPageImageView @JvmOverloads constructor(
     private val isWebtoon: Boolean = false,
 ) : FrameLayout(context, attrs, defStyleAttrs, defStyleRes) {
 
-    private val alwaysUseSSIVToDecode by lazy { Injekt.get<BasePreferences>().alwaysUseSSIVToDecode().get() }
+    private val alwaysDecodeLongStripWithSSIV by lazy {
+        Injekt.get<BasePreferences>().alwaysDecodeLongStripWithSSIV().get()
+    }
 
     private var pageView: View? = null
 
@@ -239,7 +240,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         } else {
             SubsamplingScaleImageView(context)
         }.apply {
-            setMaxTileSize(GLUtil.maxTextureSize)
+            setMaxTileSize(ImageUtil.hardwareBitmapThreshold)
             setDoubleTapZoomStyle(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER)
             setPanLimit(SubsamplingScaleImageView.PAN_LIMIT_INSIDE)
             setMinimumTileDpi(180)
@@ -300,32 +301,34 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 isVisible = true
             }
             is BufferedSource -> {
-                if (alwaysUseSSIVToDecode || !isWebtoon || !ImageUtil.canUseCoilToDecode(data)) {
+                if (!isWebtoon || alwaysDecodeLongStripWithSSIV) {
+                    setHardwareConfig(ImageUtil.canUseHardwareBitmap(data))
                     setImage(ImageSource.inputStream(data.inputStream()))
                     isVisible = true
-                } else {
-                    val request = ImageRequest.Builder(context)
-                        .data(data)
-                        .memoryCachePolicy(CachePolicy.DISABLED)
-                        .diskCachePolicy(CachePolicy.DISABLED)
-                        .target(
-                            onSuccess = { result ->
-                                val image = result as BitmapImage
-                                setImage(ImageSource.bitmap(image.bitmap))
-                                isVisible = true
-                            },
-                            onError = {
-                                this@ReaderPageImageView.onImageLoadError()
-                            },
-                        )
-                        .size(ViewSizeResolver(this@ReaderPageImageView))
-                        .precision(Precision.INEXACT)
-                        .cropBorders(config.cropBorders)
-                        .customDecoder(true)
-                        .crossfade(false)
-                        .build()
-                    context.imageLoader.enqueue(request)
+                    return@apply
                 }
+
+                ImageRequest.Builder(context)
+                    .data(data)
+                    .memoryCachePolicy(CachePolicy.DISABLED)
+                    .diskCachePolicy(CachePolicy.DISABLED)
+                    .target(
+                        onSuccess = { result ->
+                            val image = result as BitmapImage
+                            setImage(ImageSource.bitmap(image.bitmap))
+                            isVisible = true
+                        },
+                        onError = {
+                            onImageLoadError()
+                        },
+                    )
+                    .size(ViewSizeResolver(this@ReaderPageImageView))
+                    .precision(Precision.INEXACT)
+                    .cropBorders(config.cropBorders)
+                    .customDecoder(true)
+                    .crossfade(false)
+                    .build()
+                    .let(context.imageLoader::enqueue)
             }
             else -> {
                 throw IllegalArgumentException("Not implemented for class ${data::class.simpleName}")

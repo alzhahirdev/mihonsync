@@ -367,7 +367,7 @@
     <string name="restore_in_progress">Відновлення вже відбувається</string>
     <string name="creating_backup_error">Помилка резервування</string>
     <string name="backup_in_progress">Резервне копіювання вже виконується</string>
-    <string name="restore_duration">%02d хв, %02d сек</string>
+    <string name="restore_duration">%1$02d хв, %2$02d сек</string>
     <string name="backup_restore_missing_sources">Відсутні джерела:</string>
     <string name="invalid_backup_file_missing_manga">Бекап не містить жодних записів бібліотеки.</string>
     <string name="invalid_backup_file">Невірний файл резервної копії:</string>
@@ -603,7 +603,6 @@
     <string name="pref_landscape_zoom">Автоматичне масштабування широких зображень</string>
     <string name="action_close">Закрити</string>
     <string name="update_check_open">Відкрити на GitHub</string>
-    <string name="update_check_fdroid_migration_info">Нова версія наявна з офіційних релізів. Тицьніть для того аби дізнатись як мігрувати з неофіційних релізів F-Droid.</string>
     <string name="internal_error">InternalError: Перевірте журнал халеп задля додаткової інформації</string>
     <string name="delete_category_confirmation">Чи бажаєте ви видалити категорію \"%s\"?</string>
     <string name="delete_category">Видалити категорію</string>
@@ -692,11 +691,9 @@
     <string name="pref_page_rotate">Повернути широкі сторінки за розміром</string>
     <string name="pref_page_rotate_invert">Перевернути орієнтацію обернутих широких сторінок</string>
     <string name="pref_debug_info">Інформація для відлагодження</string>
-    <string name="pref_chapter_swipe">Гортання розділів</string>
     <string name="pref_chapter_swipe_end">Проведіть пальцем праворуч</string>
     <string name="pref_chapter_swipe_start">Проведіть пальцем ліворуч</string>
     <string name="pref_double_tap_zoom">Двічі торкніться, щоб збільшити</string>
-    <string name="pref_library_columns_per_row">%d на рядок</string>
     <string name="action_set_interval">Встановити інтервал</string>
     <string name="manga_display_interval_title">Оцініть кожну</string>
     <string name="action_filter_interval_custom">Налаштувати інтервал оновленнь</string>
@@ -728,11 +725,9 @@
     <string name="app_settings">Налаштування застосунку</string>
     <string name="action_apply">Застосувати</string>
     <string name="action_revert_to_default">Повернути за замовчуванням</string>
-    <string name="action_sort_category">Сортувати категорії</string>
     <string name="scanlator">Сканлейтор</string>
     <string name="action_sort_tracker_score">Оцінка трекера</string>
     <string name="label_data_storage">Дані та сховище</string>
-    <string name="sort_category_confirmation">Ви хочете сортувати категорії алфавітно?</string>
     <string name="action_create">Створити</string>
     <string name="relative_time_span_never">Ніколи</string>
     <string name="pref_flash_page_summ">Зменшує гостинг на e-ink екранах</string>
@@ -806,4 +801,21 @@
     <string name="pref_webtoon_disable_zoom_out">Вимкнути зменшення масштабу</string>
     <string name="label_upcoming">Незабаром</string>
     <string name="upcoming_calendar_next">Наступний місяць</string>
+    <string name="pref_auto_update_manga_on_mark_read">Оновити прогрес коли главу помічено прочитаною</string>
+    <string name="manga_interval_expected_update_null">Ця манга завершена, або не має приблизної дати релізу.</string>
+    <string name="action_sort_random">Випадково</string>
+    <string name="onboarding_permission_crashlytics_description">Надіслати анонімний звіт про помилку</string>
+    <string name="onboarding_permission_crashlytics">Надіслати звіт про помилку</string>
+    <string name="onboarding_permission_analytics">Дозволити аналітику</string>
+    <string name="pref_flash_duration_summary">%1$s мс</string>
+    <string name="pref_firebase">Аналітика та Звіти про помилки</string>
+    <string name="action_copy_link">Копіювати посилання</string>
+    <string name="onboarding_permission_analytics_description">Надсилати анонімну інформацію про використання для покращення застосунку.</string>
+    <string name="pref_security">Безпека</string>
+    <string name="firebase_summary">Надсилання звітів про помилки та аналітику дозволить нам ідентифікувати та виправити недоліки, покращити працездатність та зробити майбутні оновлення більш актуальними для ваших потреб</string>
+    <string name="ext_confirm_remove">Видалити Розширення?</string>
+    <string name="ext_remove">Видалити</string>
+    <string name="remove_private_extension_message">Дійсно видалити \"%s\"?</string>
+    <string name="pref_download_new_unread_chapters_only">Пропускати завантаження копій прочитаних глав</string>
+    <string name="add_repo_confirmation">Дійсно додати репозиторій \"%s\"?</string>
 </resources>
