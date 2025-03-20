@@ -43,6 +43,7 @@ import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.network.NetworkPreferences
 import eu.kanade.tachiyomi.ui.base.delegate.SecureActivityDelegate
 import eu.kanade.tachiyomi.util.system.DeviceUtil
+import eu.kanade.tachiyomi.util.system.GLUtil
 import eu.kanade.tachiyomi.util.system.WebViewUtil
 import eu.kanade.tachiyomi.util.system.animatorDurationScale
 import eu.kanade.tachiyomi.util.system.cancelNotification
@@ -53,13 +54,14 @@ import kotlinx.coroutines.flow.onEach
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
-import mihon.core.firebase.FirebaseConfig
 import mihon.core.migration.Migrator
 import mihon.core.migration.migrations.migrations
+import mihon.telemetry.TelemetryConfig
 import org.conscrypt.Conscrypt
 import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.core.common.preference.Preference
 import tachiyomi.core.common.preference.PreferenceStore
+import tachiyomi.core.common.util.system.ImageUtil
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.widget.WidgetManager
@@ -80,7 +82,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
     override fun onCreate() {
         super<Application>.onCreate()
         patchInjekt()
-        FirebaseConfig.init(applicationContext)
+        TelemetryConfig.init(applicationContext)
 
         GlobalExceptionHandler.initialize(applicationContext, CrashActivity::class.java)
 
@@ -136,12 +138,20 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         privacyPreferences.analytics()
             .changes()
-            .onEach(FirebaseConfig::setAnalyticsEnabled)
+            .onEach(TelemetryConfig::setAnalyticsEnabled)
             .launchIn(scope)
 
         privacyPreferences.crashlytics()
             .changes()
-            .onEach(FirebaseConfig::setCrashlyticsEnabled)
+            .onEach(TelemetryConfig::setCrashlyticsEnabled)
+            .launchIn(scope)
+
+        basePreferences.hardwareBitmapThreshold().let { preference ->
+            if (!preference.isSet()) preference.set(GLUtil.DEVICE_TEXTURE_LIMIT)
+        }
+
+        basePreferences.hardwareBitmapThreshold().changes()
+            .onEach { ImageUtil.hardwareBitmapThreshold = it }
             .launchIn(scope)
 
         setAppCompatDelegateThemeMode(Injekt.get<UiPreferences>().themeMode().get())
@@ -223,17 +233,15 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
         try {
             // Override the value passed as X-Requested-With in WebView requests
             val stackTrace = Looper.getMainLooper().thread.stackTrace
-            val chromiumElement = stackTrace.find {
-                it.className.equals(
-                    "org.chromium.base.BuildInfo",
-                    ignoreCase = true,
-                )
+            val isChromiumCall = stackTrace.any { trace ->
+                trace.className.equals("org.chromium.base.BuildInfo", ignoreCase = true) &&
+                    setOf("getAll", "getPackageName", "<init>").any { trace.methodName.equals(it, ignoreCase = true) }
             }
-            if (chromiumElement?.methodName.equals("getAll", ignoreCase = true)) {
-                return WebViewUtil.SPOOF_PACKAGE_NAME
-            }
+
+            if (isChromiumCall) return WebViewUtil.spoofedPackageName(applicationContext)
         } catch (_: Exception) {
         }
+
         return super.getPackageName()
     }
 
