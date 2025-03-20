@@ -103,6 +103,9 @@ class ReaderViewModel @JvmOverloads constructor(
     private val upsertHistory: UpsertHistory = Injekt.get(),
     private val updateChapter: UpdateChapter = Injekt.get(),
     private val setMangaViewerFlags: SetMangaViewerFlags = Injekt.get(),
+    private val syncPreferences: SyncPreferences = Injekt.get(),
+    private val getIncognitoState: GetIncognitoState = Injekt.get(),
+    private val libraryPreferences: LibraryPreferences = Injekt.get(),
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -542,6 +545,12 @@ class ReaderViewModel @JvmOverloads constructor(
                 readerChapter.chapter.read = true
                 updateTrackChapterRead(readerChapter)
                 deleteChapterIfNeeded(readerChapter)
+
+                // Check if syncing is enabled for chapter read:
+                if (isSyncEnabled && syncTriggerOpt.syncOnChapterRead) {
+                    SyncDataJob.startNow(Injekt.get<Application>())
+                }
+                updateChapterProgressOnComplete(readerChapter)
             }
 
             updateChapter.await(
