@@ -128,14 +128,14 @@ internal fun PreferenceItem(
                 )
             }
             is Preference.PreferenceItem.MultiSelectListPreference -> {
-                val values by item.preference.collectAsState()
+                val values by item.pref.collectAsState()
                 MultiSelectListPreferenceWidget(
                     preference = item,
                     values = values,
                     onValuesChange = { newValues ->
                         scope.launch {
                             if (item.onValueChanged(newValues)) {
-                                item.preference.set(newValues.toMutableSet())
+                                item.pref.set(newValues.toMutableSet())
                             }
                         }
                     },
@@ -150,7 +150,7 @@ internal fun PreferenceItem(
                 )
             }
             is Preference.PreferenceItem.EditTextPreference -> {
-                val values by item.preference.collectAsState()
+                val values by item.pref.collectAsState()
                 EditTextPreferenceWidget(
                     title = item.title,
                     subtitle = item.subtitle,
@@ -158,7 +158,7 @@ internal fun PreferenceItem(
                     value = values,
                     onConfirm = {
                         val accepted = item.onValueChanged(it)
-                        if (accepted) item.preference.set(it)
+                        if (accepted) item.pref.set(it)
                         accepted
                     },
                 )
@@ -177,7 +177,7 @@ internal fun PreferenceItem(
                 InfoWidget(text = item.title)
             }
             is Preference.PreferenceItem.CustomPreference -> {
-                item.content()
+                item.content(item)
             }
         }
     }

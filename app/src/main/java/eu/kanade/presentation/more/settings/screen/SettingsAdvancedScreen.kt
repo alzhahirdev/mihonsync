@@ -261,7 +261,7 @@ object SettingsAdvancedScreen : SearchableSettings {
                     },
                 ),
                 Preference.PreferenceItem.EditTextPreference(
-                    preference = userAgentPref,
+                    pref = userAgentPref,
                     title = stringResource(MR.strings.pref_user_agent_string),
                     onValueChanged = {
                         try {

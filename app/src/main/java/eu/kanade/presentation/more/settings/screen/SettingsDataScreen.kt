@@ -123,7 +123,6 @@ object SettingsDataScreen : SearchableSettings {
             getBackupAndRestoreGroup(backupPreferences = backupPreferences),
             getDataGroup(),
             getExportGroup(),
-        )
         ) + getSyncPreferences(syncPreferences = syncPreferences, syncService = syncService)
     }
 
@@ -486,7 +485,7 @@ object SettingsDataScreen : SearchableSettings {
                 title = stringResource(MR.strings.pref_sync_service_category),
                 preferenceItems = persistentListOf(
                     Preference.PreferenceItem.ListPreference(
-                        pref = syncPreferences.syncService(),
+                        preference = syncPreferences.syncService(),
                         title = stringResource(MR.strings.pref_sync_service),
                         entries = persistentMapOf(
                             SyncManager.SyncService.NONE.value to stringResource(MR.strings.off),
@@ -675,7 +674,7 @@ object SettingsDataScreen : SearchableSettings {
             title = stringResource(MR.strings.pref_sync_automatic_category),
             preferenceItems = persistentListOf(
                 Preference.PreferenceItem.ListPreference(
-                    pref = syncIntervalPref,
+                    preference = syncIntervalPref,
                     title = stringResource(MR.strings.pref_sync_interval),
                     entries = persistentMapOf(
                         0 to stringResource(MR.strings.off),

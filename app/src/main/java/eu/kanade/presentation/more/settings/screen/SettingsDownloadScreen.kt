@@ -105,7 +105,7 @@ object SettingsDownloadScreen : SearchableSettings {
         categories: () -> List<Category>,
     ): Preference.PreferenceItem.MultiSelectListPreference {
         return Preference.PreferenceItem.MultiSelectListPreference(
-            preference = downloadPreferences.removeExcludeCategories(),
+            pref = downloadPreferences.removeExcludeCategories(),
             entries = categories()
                 .associate { it.id.toString() to it.visualName }
                 .toImmutableMap(),
