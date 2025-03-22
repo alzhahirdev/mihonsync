@@ -1,5 +1,6 @@
 package eu.kanade.presentation.more.settings
 
+import androidx.annotation.IntRange
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,7 +37,7 @@ sealed class Preference {
          * A [PreferenceItem] that provides a two-state toggleable option.
          */
         data class SwitchPreference(
-            val pref: PreferenceData<Boolean>,
+            val preference: PreferenceData<Boolean>,
             override val title: String,
             override val subtitle: String? = null,
             override val icon: ImageVector? = null,
@@ -49,21 +50,23 @@ sealed class Preference {
          */
         data class SliderPreference(
             val value: Int,
-            val min: Int = 0,
-            val max: Int,
-            override val title: String = "",
+            override val title: String,
+            val valueRange: IntProgression = 0..1,
+            @IntRange(from = 0) val steps: Int = with(valueRange) { (last - first) - 1 },
             override val subtitle: String? = null,
-            override val icon: ImageVector? = null,
             override val enabled: Boolean = true,
-            override val onValueChanged: suspend (newValue: Int) -> Boolean = { true },
-        ) : PreferenceItem<Int>()
+            override val onValueChanged: suspend (value: Int) -> Boolean = { true },
+        ) : PreferenceItem<Int>() {
+            override val icon: ImageVector? = null
+        }
+
 
         /**
          * A [PreferenceItem] that displays a list of entries as a dialog.
          */
         @Suppress("UNCHECKED_CAST")
         data class ListPreference<T>(
-            val pref: PreferenceData<T>,
+            val preference: PreferenceData<T>,
             override val title: String,
             override val subtitle: String? = "%s",
             val subtitleProvider: @Composable (value: T, entries: ImmutableMap<T, String>) -> String? =
@@ -74,7 +77,7 @@ sealed class Preference {
 
             val entries: ImmutableMap<T, String>,
         ) : PreferenceItem<T>() {
-            internal fun internalSet(newValue: Any) = pref.set(newValue as T)
+            internal fun internalSet(newValue: Any) = preference.set(newValue as T)
             internal suspend fun internalOnValueChanged(newValue: Any) = onValueChanged(newValue as T)
 
             @Composable
@@ -141,14 +144,14 @@ sealed class Preference {
          */
         data class TrackerPreference(
             val tracker: Tracker,
-            override val title: String,
             val login: () -> Unit,
             val logout: () -> Unit,
         ) : PreferenceItem<String>() {
+            override val title: String = ""
             override val enabled: Boolean = true
             override val subtitle: String? = null
             override val icon: ImageVector? = null
-            override val onValueChanged: suspend (newValue: String) -> Boolean = { true }
+            override val onValueChanged: suspend (value: String) -> Boolean = { true }
         }
 
         data class InfoPreference(
