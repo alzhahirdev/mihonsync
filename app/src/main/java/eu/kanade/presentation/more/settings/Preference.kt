@@ -60,7 +60,6 @@ sealed class Preference {
             override val icon: ImageVector? = null
         }
 
-
         /**
          * A [PreferenceItem] that displays a list of entries as a dialog.
          */
