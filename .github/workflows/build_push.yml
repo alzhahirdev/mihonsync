@@ -137,4 +137,4 @@ jobs:
             mihonsync-x86_64-${{ env.VERSION_TAG }}.apk
           draft: true
           prerelease: false
-          token: ${{ secrets.MIHON_BOT_TOKEN }}
+          token: ${{ secrets.PAT }}
