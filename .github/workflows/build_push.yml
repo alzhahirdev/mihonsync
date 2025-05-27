@@ -65,7 +65,7 @@ jobs:
           
           build_ref=$(echo "${{ inputs.build_ref }}")
           if [ build_ref != '' ]; then
-            echo "VERSION_TAG=build_ref" >> $GITHUB_ENV
+            echo "VERSION_TAG=$build_ref" >> $GITHUB_ENV
           else
             echo "VERSION_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
           fi
@@ -125,8 +125,6 @@ jobs:
             | armeabi-v7a | ${{ env.APK_ARMEABI_V7A_SHA }}
             | x86 | ${{ env.APK_X86_SHA }} |
             | x86_64 | ${{ env.APK_X86_64_SHA }} |
-
-            ## If you are unsure which version to choose then go with mihon-${{ env.VERSION_TAG }}.apk
             
             ## If you are unsure which version to choose then go with mihonsync-${{ env.VERSION_TAG }}.apk
           files: |
