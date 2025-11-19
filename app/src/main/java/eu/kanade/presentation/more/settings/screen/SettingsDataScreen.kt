@@ -615,7 +615,7 @@ object SettingsDataScreen : SearchableSettings {
             Preference.PreferenceItem.EditTextPreference(
                 title = stringResource(MR.strings.pref_sync_host),
                 subtitle = stringResource(MR.strings.pref_sync_host_summ),
-                pref = syncPreferences.clientHost(),
+                preference = syncPreferences.clientHost(),
                 onValueChanged = { newValue ->
                     scope.launch {
                         // Trim spaces at the beginning and end, then remove trailing slash if present
@@ -629,7 +629,7 @@ object SettingsDataScreen : SearchableSettings {
             Preference.PreferenceItem.EditTextPreference(
                 title = stringResource(MR.strings.pref_sync_api_key),
                 subtitle = stringResource(MR.strings.pref_sync_api_key_summ),
-                pref = syncPreferences.clientAPIKey(),
+                preference = syncPreferences.clientAPIKey(),
             ),
         )
     }
