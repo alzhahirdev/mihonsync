@@ -35,7 +35,7 @@ val LocalPreferenceMinHeight = compositionLocalOf(structuralEqualityPolicy()) { 
 
 @Composable
 fun StatusWrapper(
-    item: Preference.PreferenceItem<*>,
+    item: Preference.PreferenceItem<*, *>,
     highlightKey: String?,
     content: @Composable () -> Unit,
 ) {
@@ -56,7 +56,7 @@ fun StatusWrapper(
 
 @Composable
 internal fun PreferenceItem(
-    item: Preference.PreferenceItem<*>,
+    item: Preference.PreferenceItem<*, *>,
     highlightKey: String?,
 ) {
     val scope = rememberCoroutineScope()
@@ -83,17 +83,18 @@ internal fun PreferenceItem(
             }
             is Preference.PreferenceItem.SliderPreference -> {
                 BaseSliderItem(
-                    label = item.title,
                     value = item.value,
                     valueRange = item.valueRange,
-                    valueText = item.subtitle.takeUnless { it.isNullOrEmpty() } ?: item.value.toString(),
                     steps = item.steps,
-                    labelStyle = MaterialTheme.typography.titleLarge.copy(fontSize = TitleFontSize),
+                    title = item.title,
+                    subtitle = item.subtitle,
+                    valueString = item.valueString.takeUnless { it.isNullOrEmpty() } ?: item.value.toString(),
                     onChange = {
                         scope.launch {
                             item.onValueChanged(it)
                         }
                     },
+                    titleStyle = MaterialTheme.typography.titleLarge.copy(fontSize = TitleFontSize),
                     modifier = Modifier.padding(
                         horizontal = PrefsHorizontalPadding,
                         vertical = PrefsVerticalPadding,
@@ -128,14 +129,14 @@ internal fun PreferenceItem(
                 )
             }
             is Preference.PreferenceItem.MultiSelectListPreference -> {
-                val values by item.pref.collectAsState()
+                val values by item.preference.collectAsState()
                 MultiSelectListPreferenceWidget(
                     preference = item,
                     values = values,
                     onValuesChange = { newValues ->
                         scope.launch {
                             if (item.onValueChanged(newValues)) {
-                                item.pref.set(newValues.toMutableSet())
+                                item.preference.set(newValues.toMutableSet())
                             }
                         }
                     },
@@ -150,7 +151,7 @@ internal fun PreferenceItem(
                 )
             }
             is Preference.PreferenceItem.EditTextPreference -> {
-                val values by item.pref.collectAsState()
+                val values by item.preference.collectAsState()
                 EditTextPreferenceWidget(
                     title = item.title,
                     subtitle = item.subtitle,
@@ -158,7 +159,7 @@ internal fun PreferenceItem(
                     value = values,
                     onConfirm = {
                         val accepted = item.onValueChanged(it)
-                        if (accepted) item.pref.set(it)
+                        if (accepted) item.preference.set(it)
                         accepted
                     },
                 )
@@ -177,7 +178,7 @@ internal fun PreferenceItem(
                 InfoWidget(text = item.title)
             }
             is Preference.PreferenceItem.CustomPreference -> {
-                item.content(item)
+                item.content()
             }
         }
     }
