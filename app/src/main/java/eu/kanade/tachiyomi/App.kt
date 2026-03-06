@@ -232,8 +232,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         val syncPreferences: SyncPreferences by injectLazy()
         val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
-        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppResume
-        ) {
+        if (syncPreferences.isSyncEnabled() && syncTriggerOpt.syncOnAppResume) {
             SyncDataJob.startNow(this@App)
         }
     }
