@@ -155,14 +155,16 @@ abstract class SyncService(
                         logcat(LogPriority.DEBUG, logTag) {
                             "Keeping local version of ${local.title} with merged chapters."
                         }
-                        local.chapters = mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
+                        local.chapters =
+                            mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
                         updateCategories(local, localCategoriesMapByOrder)
                         local
                     } else {
                         logcat(LogPriority.DEBUG, logTag) {
                             "Keeping remote version of ${remote.title} with merged chapters."
                         }
-                        remote.chapters = mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
+                        remote.chapters =
+                            mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
                         updateCategories(remote, remoteCategoriesMapByOrder)
                         remote
                     }
@@ -234,7 +236,9 @@ abstract class SyncService(
                         logcat(LogPriority.DEBUG, logTag) { "Keeping local chapter: ${localChapter.name}." }
                         localChapter
                     } else {
-                        logcat(LogPriority.DEBUG, logTag) { "Dropping local chapter deleted on remote: ${localChapter.name}." }
+                        logcat(LogPriority.DEBUG, logTag) {
+                            "Dropping local chapter deleted on remote: ${localChapter.name}."
+                        }
                         null
                     }
                 }
