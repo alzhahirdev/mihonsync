@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew spotlessCheck
 
       - name: Run unit tests
-        run: ./gradlew testReleaseUnitTest\
+        run: ./gradlew testDebugUnitTest
 
       - name: Verify SQLDelight migrations
         run: ./gradlew verifySqlDelightMigration
