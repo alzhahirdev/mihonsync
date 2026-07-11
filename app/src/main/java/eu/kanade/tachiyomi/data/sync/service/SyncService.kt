@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import logcat.LogPriority
 import logcat.logcat
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 data class SyncData(
@@ -109,19 +110,20 @@ abstract class SyncService(
         val remoteCategoriesMapByOrder = remoteCategories.associateBy { it.order }
         val mergedCategoriesMapByName = mergedCategories.associateBy { it.name }
 
-        fun updateCategories(theManga: BackupManga, theMap: Map<Long, BackupCategory>): BackupManga {
-            return theManga.copy(
-                categories = theManga.categories.mapNotNull {
-                    theMap[it]?.let { category ->
-                        mergedCategoriesMapByName[category.name]?.order
-                    }
-                },
-            )
+        fun updateCategories(theManga: BackupManga, theMap: Map<Long, BackupCategory>) {
+            theManga.categories = theManga.categories.mapNotNull {
+                theMap[it]?.let { category ->
+                    mergedCategoriesMapByName[category.name]?.order
+                }
+            }
         }
 
         logcat(LogPriority.DEBUG, logTag) {
             "Starting merge. Local list size: ${localMangaListSafe.size}, Remote list size: ${remoteMangaListSafe.size}"
         }
+
+        val lastSyncTime = syncPreferences.lastSyncTimestamp().get().milliseconds.inWholeSeconds
+        val syncOptions = syncPreferences.getSyncSettings()
 
         val mergedList = (localMangaMap.keys + remoteMangaMap.keys).distinct().mapNotNull { compositeKey ->
             val local = localMangaMap[compositeKey]
@@ -129,26 +131,40 @@ abstract class SyncService(
 
             // New version comparison logic
             when {
-                local != null && remote == null -> updateCategories(local, localCategoriesMapByOrder)
-                local == null && remote != null -> updateCategories(remote, remoteCategoriesMapByOrder)
+                local != null && remote == null -> {
+                    if (lastSyncTime == 0L || local.lastModifiedAt > lastSyncTime) {
+                        updateCategories(local, localCategoriesMapByOrder)
+                        local
+                    } else {
+                        logcat(LogPriority.DEBUG, logTag) { "Dropping local manga deleted on remote: ${local.title}." }
+                        null
+                    }
+                }
+                local == null && remote != null -> {
+                    if (lastSyncTime == 0L || remote.lastModifiedAt > lastSyncTime) {
+                        updateCategories(remote, remoteCategoriesMapByOrder)
+                        remote
+                    } else {
+                        logcat(LogPriority.DEBUG, logTag) { "Dropping deleted remote manga: ${remote.title}." }
+                        null
+                    }
+                }
                 local != null && remote != null -> {
                     // Compare versions to decide which manga to keep
                     if (local.version >= remote.version) {
                         logcat(LogPriority.DEBUG, logTag) {
                             "Keeping local version of ${local.title} with merged chapters."
                         }
-                        updateCategories(
-                            local.copy(chapters = mergeChapters(local.chapters, remote.chapters)),
-                            localCategoriesMapByOrder,
-                        )
+                        local.chapters = mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
+                        updateCategories(local, localCategoriesMapByOrder)
+                        local
                     } else {
                         logcat(LogPriority.DEBUG, logTag) {
                             "Keeping remote version of ${remote.title} with merged chapters."
                         }
-                        updateCategories(
-                            remote.copy(chapters = mergeChapters(local.chapters, remote.chapters)),
-                            remoteCategoriesMapByOrder,
-                        )
+                        remote.chapters = mergeChapters(local.chapters, remote.chapters, lastSyncTime, syncOptions.chapters)
+                        updateCategories(remote, remoteCategoriesMapByOrder)
+                        remote
                     }
                 }
                 else -> null // No manga found for key
@@ -186,6 +202,8 @@ abstract class SyncService(
     private fun mergeChapters(
         localChapters: List<BackupChapter>,
         remoteChapters: List<BackupChapter>,
+        lastSyncTime: Long,
+        chapters: Boolean,
     ): List<BackupChapter> {
         val logTag = "MergeChapters"
 
@@ -212,17 +230,33 @@ abstract class SyncService(
 
             when {
                 localChapter != null && remoteChapter == null -> {
-                    logcat(LogPriority.DEBUG, logTag) { "Keeping local chapter: ${localChapter.name}." }
-                    localChapter
+                    if (lastSyncTime == 0L || localChapter.lastModifiedAt > lastSyncTime) {
+                        logcat(LogPriority.DEBUG, logTag) { "Keeping local chapter: ${localChapter.name}." }
+                        localChapter
+                    } else {
+                        logcat(LogPriority.DEBUG, logTag) { "Dropping local chapter deleted on remote: ${localChapter.name}." }
+                        null
+                    }
                 }
                 localChapter == null && remoteChapter != null -> {
-                    logcat(LogPriority.DEBUG, logTag) { "Taking remote chapter: ${remoteChapter.name}." }
-                    remoteChapter
+                    if (lastSyncTime == 0L || remoteChapter.lastModifiedAt > lastSyncTime) {
+                        logcat(LogPriority.DEBUG, logTag) { "Taking remote chapter: ${remoteChapter.name}." }
+                        remoteChapter
+                    } else {
+                        logcat(LogPriority.DEBUG, logTag) { "Dropping deleted remote chapter: ${remoteChapter.name}." }
+                        null
+                    }
                 }
                 localChapter != null && remoteChapter != null -> {
                     // Use version number to decide which chapter to keep
                     val chosenChapter = if (localChapter.version >= remoteChapter.version) {
-                        localChapter
+                        // If there are more chapter on remote, local sourceOrder will need to be updated to maintain correct source order.
+                        if (localChapters.size < remoteChapters.size) {
+                            localChapter.sourceOrder = remoteChapter.sourceOrder
+                            localChapter
+                        } else {
+                            localChapter
+                        }
                     } else {
                         remoteChapter
                     }
