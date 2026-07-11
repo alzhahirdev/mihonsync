@@ -85,8 +85,8 @@ class MangaRestorer(
             )
 
             if (isSync) {
-                mangasQueries.resetIsSyncing()
-                chaptersQueries.resetIsSyncing()
+                database.mangasQueries.resetIsSyncing()
+                database.chaptersQueries.resetIsSyncing()
             }
         }
     }

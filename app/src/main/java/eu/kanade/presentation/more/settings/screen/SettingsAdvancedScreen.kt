@@ -460,7 +460,7 @@ object SettingsAdvancedScreen : SearchableSettings {
         val syncPreferences = remember { Injekt.get<SyncPreferences>() }
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.label_sync),
-            preferenceItems = persistentListOf(
+            preferenceItems = listOf(
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(MR.strings.pref_reset_sync_timestamp),
                     subtitle = stringResource(MR.strings.pref_reset_sync_timestamp_subtitle),
