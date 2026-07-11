@@ -17,7 +17,8 @@ MihonSync is not affiliated with the Mihon project or any third-party developers
 
 ## Contributing
 
-Contribute either to the Mihon project or SyncYomi instead. There's no reason for this project to receive any contribution.
+Contribute either to the Mihon project or SyncYomi instead. There's no reason for this project to receive any contribution.\
+You can sponsor Mihon on Patreon.
 
 ## License
 
